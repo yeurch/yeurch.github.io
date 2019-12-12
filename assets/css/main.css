@@ -74,8 +74,8 @@ nav li:hover a.element { padding-left: 0px; }
 
 section { 
     position: relative;
-    margin-bottom: 50px;
-    padding-bottom: 50px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 #profile div.column:first-child { position: relative; }
@@ -104,7 +104,7 @@ section {
 
 #profile span.role {
     display: block;
-    padding-left: 34px;
+    padding-left: 30px;
     color: #a4a4a4;
     font-size: 16px;
 }
