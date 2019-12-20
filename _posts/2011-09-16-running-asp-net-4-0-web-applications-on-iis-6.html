@@ -1,0 +1,68 @@
+---
+layout: post
+status: publish
+published: true
+title: Running ASP.NET 4.0 Web Applications on IIS 6
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 94
+wordpress_url: http://www.richardfawcett.net/2011/09/16/running-asp-net-4-0-web-applications-on-iis-6/
+date: '2011-09-16 15:58:00 +0000'
+date_gmt: '2011-09-16 14:58:00 +0000'
+categories:
+- ASP.NET
+tags:
+- Windows Server 2003
+- ASP.NET 4.0
+- IIS 6
+- MVC3
+comments:
+- id: 268
+  author: Mikel
+  author_email: surfermikel@gmail.com
+  author_url: ''
+  date: '2011-09-30 17:28:10 +0000'
+  date_gmt: '2011-09-30 16:28:10 +0000'
+  content: "<p>Did you ever get nuget to work?  I came here hoping for some luck with
+    that...</p>\n"
+- id: 269
+  author: Richard
+  author_email: r_d_fawcett@hotmail.com
+  author_url: ''
+  date: '2011-09-30 17:52:13 +0000'
+  date_gmt: '2011-09-30 16:52:13 +0000'
+  content: |
+    <p>@Mikel,</p>
+
+    <p>Yes, absolutely. There are three ways to use NuGet, and I'm not going to assume anything about your technical ability, so if my answer is too simplistic, or overly complex, just let me know!</p>
+
+    <p>Firstly, I'd point out that for the vast majority of users there is no need to setup your own NuGet feed. The only reason you'd need to is if you want to host your own private packages, or your employer doesn't want developers to use the full public feed that's built-in to the package manager in Visual Studio.</p>
+
+    <p>If you do need your own feed, there are three ways you can go about this.
+    <ul>
+        <li>Firstly, you can just use a folder on your hard drive as a feed.
+        <li>Secondly, there's a NuGet package on the public feed called <a href="http://nuget.org/List/Packages/NuGet.Server" rel="nofollow">NuGet.Server</a> which is a simple web application which just serves .nupkg files which are dropped into a certain folder.  Nothing fancy. Instructions for doing this and the first method can be found <a href="http://docs.nuget.org/docs/creating-packages/hosting-your-own-nuget-feeds" rel="nofollow">here</a>.</li>
+        <li>Finally, there's a full blown clone of the <a href="http://nuget.org" rel="nofollow">NuGet gallery website</a> which you can setup. Details instructions for doing so can be found <a href="http://docs.nuget.org/docs/contribute/setting-up-a-local-gallery" rel="nofollow">here</a>.</li>
+    </ul></p>
+
+    <p>I took the final approach, and it worked well for me.</p>
+---
+<p>Today, I decided to install a <a href="http://nuget.org">NuGet</a> gallery on our development server at work, in order that we can host our internal packages there, and make them easily available to all projects.&nbsp; The problem, our development server is not exactly state of the art, and runs Windows Server 2003 SP2 and IIS 6.0.&nbsp; It did <em>not</em> have ASP.NET 4.0 installed, which is a pre-requisite for the NuGet gallery application.</p>
+<p>I was expecting quite a battle to get .Net 4 installed, configured, and working on the server.&nbsp; My fears were unfounded.&nbsp; I <a href="http://www.microsoft.com/download/en/details.aspx?id=17851">ran the installer</a>, rebooted, created a virtual directory, set it to ASP.NET version 4.0 (which required an IIS restart, more on this later), published the default "Welcome to ASP.NET" application, and voila!&nbsp; The result of a HEAD HTTP request to the new virtual directory (note the Server and X-AspNet-Version headers):</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2011/09/image.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="image" border="0" alt="image" src="http://www.richardfawcett.net/wp-content/uploads/2011/09/image_thumb.png" width="509" height="200"></a></p>
+<p>The website in action:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2011/09/image1.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="image" border="0" alt="image" src="http://www.richardfawcett.net/wp-content/uploads/2011/09/image_thumb1.png" width="306" height="225"></a></p>
+<p>It was almost too easy.</p>
+<p>So, while I was on a roll, I decided to have a quick play around to find out if it would be easy enough to deploy <a href="http://www.asp.net/mvc/mvc3">MVC3</a> applications to the server.&nbsp; Unfortunately, it wasn't quite so easy.&nbsp; I created another virtual directory and set it to .Net 4.&nbsp; I was surprised that the system prompted me to restart IIS again &ndash; I had assumed that this happened before because it was the first app I'd set to version 4.0.&nbsp; The prompt gives a hint about running <code>aspnet&#95;regiis &ndash;norestart &ndash;s <VirtualPath></code>, but in this case, I didn't know what the virtual path was.</p>
+<p>After a little research, I found out that running <code>aspnet&#95;regiis &ndash;lk</code> lists the virtual directories on the server, and this is key to getting hold of the magic number that corresponds to the website.&nbsp; So, with that info, I was able to run:</p>
+<p><code>aspnet&#95;regiis &ndash;norestart &ndash;s W3SVC/116872853/root/net4mvctest/</code></p>
+<p>which updated my app to .Net 4 without needing an IIS restart.&nbsp; <em>Note that your virtual directory path will differ from the above!</em></p>
+<p>MVC3 is not installed on the server, and I had no real wish to install it.&nbsp; To ensure that my app ran on the server, in Visual Studio I selected the menu item "Project &ndash;> Add Deployable Dependences&hellip;" and ticked "ASP.NET MVC" and "ASP.NET Web Pages with Razor syntax".&nbsp; Now, I deployed.&nbsp; The result&hellip; "Directory Listing Denied".&nbsp; Hmmmm.</p>
+<p>It turns out that when you deploy a .Net 4 app inside a .Net 2 website, you need to setup a wildcard extension so that .Net handles all requests to the application.&nbsp; On the application's property pages in IIS Manager, I clicked "Configure" and inserted a new wildcard map to point to <code>C:\Windows\Microsoft.NET\Framework\v4.0.30319\aspnet&#95;isapi.dll</code> and ensured that "Verify that file exists" was unticked.&nbsp; Ah, that's better&hellip;</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2011/09/image2.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="image" border="0" alt="image" src="http://www.richardfawcett.net/wp-content/uploads/2011/09/image_thumb2.png" width="349" height="219"></a></p>
+<p>All in all, it took me less than an hour to set all this up, including working through my problems.&nbsp; I'd say that was a good hour's work.&nbsp; Now, I need to get on with configuring and deploying the NuGet gallery&hellip;</p>

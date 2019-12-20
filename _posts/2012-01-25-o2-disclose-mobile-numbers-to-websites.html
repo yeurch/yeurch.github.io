@@ -1,0 +1,44 @@
+---
+layout: post
+status: publish
+published: true
+title: O2 Disclose Mobile Numbers to Websites
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 118
+wordpress_url: http://www.richardfawcett.net/?p=118
+date: '2012-01-25 14:53:00 +0000'
+date_gmt: '2012-01-25 14:53:00 +0000'
+categories:
+- Non-IT
+tags:
+- Law
+- Data Protection
+comments: []
+---
+<p>Yesterday lunchtime, Lewis Peckover (<a href="http://twitter.com/lewispeckover">@lewispeckover</a>) <a href="https://twitter.com/#!/lewispeckover/status/161828764370747392">noticed</a> that mobile browsers on O2's UK network were sending the phone's number to websites as an HTTP header, resulting in this information being available to the websites browsed.&nbsp; This information is not present when browsing over WiFi, indicating that it is probably added in transit by O2.</p>
+<p>The story gained momentum on Wednesday morning on Twitter, and as the image below shows, <a href="http://twitter.com/o2">O2's Twitter account</a> was being inundated with people complaining about this.<br><a href="http://www.richardfawcett.net/wp-content/uploads/2012/01/image.png"><img style="background-image: none; border-right-width: 0px; margin: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="image" border="0" alt="image" src="http://www.richardfawcett.net/wp-content/uploads/2012/01/image_thumb.png" width="244" height="180"></a></p>
+<p>Around lunchtime today, the Guardian published <a href="http://www.guardian.co.uk/technology/2012/jan/25/02-mobile-phone-users-privacy-breach-website">an article</a> about the breach. In the article, it said that a spokesman from the <a href="http://www.ico.gov.uk/">Information Commissioner's Office</a> said there was no immediate breach of the <a href="http://www.legislation.gov.uk/ukpga/1998/29/contents">Data Protection Act</a>, as a mobile phone number on its own is not classed as "personally identifiable information".</p>
+<p>This seemed nonsense to me, so I took a look at the legislation.</p>
+<blockquote><p>1.(1) states that "personal data" means data which relate to a living individual who can be identified -<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (a) from those data, or<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (b) from those data and <strong>other information which is in the possession of</strong>, or is likely to come into the possession of, the data controller.</p>
+</blockquote>
+<p>I would argue that the phone number is personal data, as O2 can use it in conjunction with their billing records to identify the account holder.</p>
+<p>1. (1) also states that "processing" in relation to data includes among other things, "disclosure of the information or data by transmission".</p>
+<p>So, at this point, we can say that O2 have processed personal data by transferring it to websites visited by the user of the phone.&nbsp; There are of course, many conditions laid out which govern the processing of data.&nbsp; The first principle (set out in <a href="http://www.legislation.gov.uk/ukpga/1998/29/schedule/1">Schedule 1</a>, Part 1, #1) reads:</p>
+<blockquote><p>Personal data shall be processed fairly and lawfully and, in particular, shall not be processed unless -<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (a) at least one of the conditions in Schedule 2 is met, and<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (b) in the case of sensitive personal data, at least one of the conditions in Schedule 3 is met.</p>
+</blockquote>
+<p>Well, this isn't <em>sensitive</em> personal data (which is limited to things like religion, political affiliation, sexual preference), so this means that O2 must satisfy at least one of the conditions in <a href="http://www.legislation.gov.uk/ukpga/1998/29/schedule/2">Schedule 2</a> before they can process the data. So, here are the conditions:</p>
+<blockquote><p>1. The data subject has given consent to the processing.<br>2. The processing is necessary for the performance of a contract to which the data subject is a party, or for entering into such a contract<br>3. The processing is necessary for compliance with a legal obligation<br>4. The processing is necessary in order to protect the vital interests of the data subject<br>5. The processing is necessary for the administration of justice, for the exercise of functions of either House of Parliament, for the exercise of any functions of the Crown, or for the exercise of any other functions of a public nature exercised in the public interest by any person.</p>
+</blockquote>
+<p>So, a quick glance will tell you that O2 can only process this data if explicit permission has been given by the subject for them to do so.</p>
+<p>Now, when signing up for a contract, you have to agree to the Privacy Policy of O2.&nbsp; Section 5 is entitled "<a href="http://www.o2.co.uk/privacy.html#disclosureofyourinformation">Disclosure of your Information</a>" and guess what&hellip; it doesn't say that it will disclose it to every Tom, Dick or Harry who runs a website.&nbsp; So, by agreeing to their terms and conditions, data subjects do <em>not</em> consent for their information to be used in this way.</p>
+<p>I'd argue that this means that O2 are in breach of the Data Protection Act.&nbsp; Case closed, although I'm no lawyer&hellip;.</p>
+<p>If you want to see whether you're affected, Lewis has written a quick web page which will tell you if it's being sent your phone number.&nbsp; Visit it at <a href="http://lew.io/headers.php">http://lew.io/headers.php</a>.</p></p>
+<h2>Update 25-Jan-2012 15:39</h2>
+<p>Since writing earlier today, O2 have issued <a href="http://blog.o2.co.uk/home/2012/01/o2-mobile-numbers-and-web-browsing.html">an explanation of what went wrong</a> on their blog. In it, they say that the problem has been occurring since 10th January owing to a bug. The reason it's even possible is that this data is designed to be sent to trusted third parties for purposes of age verification etc. (and this <em>is</em> permitted by their privacy policy). However, given that the data doesn't go over WiFi, then the trusted 3rd parties are only getting the information in certain cases, which makes it hard to understand how this could work for them.</p>
+<p>The good news is that the <strong>data breach is now fixed</strong>, and O2 are co-operating with the Information Commissioner's Office and have notified OFCOM. Full marks to O2 on the transparent way they've handled this.</p>

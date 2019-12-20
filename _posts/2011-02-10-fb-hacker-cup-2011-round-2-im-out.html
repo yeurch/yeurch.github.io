@@ -1,0 +1,71 @@
+---
+layout: post
+status: publish
+published: true
+title: FB Hacker Cup 2011 Round 2 &ndash; I'm Out
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 72
+wordpress_url: http://www.richardfawcett.net/2011/02/10/fb-hacker-cup-2011-round-2-im-out/
+date: '2011-02-10 13:21:00 +0000'
+date_gmt: '2011-02-10 13:21:00 +0000'
+categories:
+- Programming
+tags:
+- Programming
+- Facebook
+- Hacker Cup
+comments: []
+---
+<p>A couple of weeks ago, I <a href="http://www.richardfawcett.net/2011/01/26/facebook-hacker-cup-2011/">blogged</a> about my participation in the inaugural <a href="http://www.facebook.com/hackercup">Facebook Hacker Cup</a>.&nbsp; Well, I didn't get any further, and exited spectacularly in round 2.</p>
+<p>To say it was tricky is an understatement.&nbsp; The level of difficulty was a huge leap up from the previous round.&nbsp; Of the 1,673 programmers eligible to compete in the round, just five got all three problems solved, a further 22 solved two of the problems, and 109 people got just one right&hellip; leaving over 90% of entrants with none right, including me!</p>
+<p>I started by tackling the problem which seemed easiest at first glance.&nbsp; This was "<em>Scott's New Trick</em>".&nbsp; I don't know whether it really was the easiest, as I spent the whole three hours working on it.&nbsp; I casually glanced at the evolving scoreboard a few times as the contest progressed, and was confident that if I managed to get just one right, I'd be in the top 300, thus winning a commemorative T-shirt.&nbsp; Obviously, I had no realistic expectation of being in the top 25, thus earning an all expenses paid trip to Palo Alto, California for the finals.</p>
+<p>The problem statement for Scott's New Trick is as follows:</p>
+<blockquote><p><font size="2" face="Verdana">Little Scott recently learned how to perform arithmetic operations modulo some prime number <strong>P</strong>. As a training set he picked two sequences <strong>a</strong> of length <strong>N </strong>and <strong>b</strong> of length <strong>M</strong>, generated in the following way:</font>
+<p><font face="Verdana"><font size="2">a<sub>1</sub>=A1<br>a<sub>2</sub>=A2<br>a<sub>i</sub>=(a<sub>i-2</sub> * A3 + a<sub>i-1</sub>*A4 + A5) mod P, for i=3...<strong>N</strong><br>b<sub>1</sub>=B1<br>b<sub>2</sub>=B2<br>b<sub>j</sub>=(b<sub>j-2</sub> * B3 + b<sub>j-1</sub> * B4 + B5) mod P, for j=3...<strong>M</strong></font></font>
+<p><font size="2" face="Verdana">Now he wants to find the number of pairs (i, j), where 1 &le; i &le; <strong>N</strong> and 1 &le; j &le; <strong>M</strong>, such that (a<sub>i</sub> * b<sub>j</sub>) mod <strong>P</strong> < <strong>L</strong>, for given number <strong>L</strong>. He asked you to do the same to help him check his answers.</font><br />
+<h4><font size="2" face="Verdana">Input</font></h4>
+<p><font size="2" face="Verdana">The first line of input file consists of a single number <strong>T</strong>, the number of test cases. Each test consists of three lines. The first line of a test case contains two integers: prime number <strong>P</strong> and positive integer <strong>L</strong>. The second line consists of six non-negative integers <strong>N</strong>, <strong>A1</strong>, <strong>A2</strong>, <strong>A3</strong>, <strong>A4</strong>, <strong>A5</strong>. Likewise, the third line contains six non-negative integers <strong>M</strong>, <strong>B1</strong>, <strong>B2</strong>, <strong>B3</strong>, <strong>B4</strong>, <strong>B5</strong>.</font><br />
+<h4><font size="2" face="Verdana">Output</font></h4>
+<p><font size="2" face="Verdana">Output <strong>T</strong> lines, with the answer to each test case on a single line.</font><br />
+<h4><font size="2" face="Verdana">Constraints</font></h4>
+<p><font face="Verdana"><font size="2"><strong>T</strong> = 20<br>2 &le; <strong>P</strong> < 250,000<br><strong>P</strong> is prime<br>1 &le; <strong>L</strong> &le; <strong>P</strong><br>2 &le; <strong>N</strong>, <strong>M</strong> &le; 10,000,000<br>0 &le; <strong>A1</strong>, <strong>A2</strong>, <strong>A3</strong>, <strong>A4</strong>, <strong>A5</strong>, <strong>B1</strong>, <strong>B2</strong>, <strong>B3</strong>, <strong>B4</strong>, <strong>B5</strong> < <strong>P</strong></font></font></p>
+</blockquote>
+<p>The given example input file was:</p>
+<pre>5
+3 1
+4 0 2 2 2 2
+2 1 2 1 0 0
+3 1
+5 2 0 0 1 1
+5 1 1 2 0 0
+3 3
+5 0 0 1 2 2
+3 2 1 1 1 1
+5 1
+5 2 0 4 0 4
+3 2 1 2 4 4
+5 4
+2 2 1 3 1 4
+5 1 0 2 3 3</pre>
+<p>The corresponding output should be:</p>
+<pre>6
+10
+15
+3
+9</pre>
+<p>It was quite straight-forward to get a solution that worked on the sample input and produced the expected output.&nbsp; My naive approach was to read the input file, and build up the values of the sequences <strong>a</strong> and <strong>b</strong>. Then, I used two nested <em>for</em> loops to consider every pair of values in the sequence, checking whether the the remainder of the product of the two values when divided by <strong>P</strong> was less than <strong>L</strong>.</p>
+<p>I got this working in maybe 40 minutes.&nbsp; I think I would have been a lot faster if it weren't for my unfamiliarity with C++ (yes I know, a bad workman blames his tools).</p>
+<p>Next, I wrote a quick utility to generate some test data using the range of numbers specified in the problem statement.&nbsp; This resulted in an input file with more realistic numbers (i.e. 20 tests with the lengths of each series in the millions).&nbsp; At this point, I realised I had a problem.</p>
+<p>I devised an optimisation strategy and set to work.&nbsp; The (unsuccessful) approach I took was based upon the assumption that if we get any two values in a sequence repeated, then the rest of the sequence is going to be a short repeating sequence, thus drastically reducing the number of distinct values in the sequence.</p>
+<p>So, as I was constructing the sequence, I was keeping a list of distinct values, and the number of times each appeared.&nbsp; Then, instead of looping over the entire sequence, I could instead loop over the two sets of distinct values, and add the product of the number of times each value appeared in its sequence to the result when the condition was satisfied.</p>
+<p>This did have benefits on my own generated test data, and a single test ran in around 20 seconds (rather than me giving up waiting which is what I did before my optimisation).</p>
+<p>I knew that this was going to be close when multiplied up by 20 tests (as only six minutes is allowed once the real input file is downloaded), but I was running out of time.&nbsp; I set my program running and waited.&nbsp; And waited.&nbsp; The time expired.&nbsp; I waited some more.&nbsp; After 15 minutes, I terminated execution and went to bed.&nbsp; It was after midnight by this time.</p>
+<p>So, what went wrong.&nbsp; Well, Facebook could have been clever and chosen values which didn't result in repeated sequences, thus thwarting the assumption made in my optimisation.&nbsp; Alternatively, my assumption could have been completely wrong, and the chance of a repeated sequence might have been quite low, meaning that some of the Facebook sequences would take a long time to run.</p>
+<p>I've downloaded some of the successful competitors solutions and taken a quick look at them.&nbsp; They are exceedingly complex when compared to my simple attempt, and if that's the level of skill required to progress from this round, then I'm not ashamed to have gone out at this stage.</p>
+<p>I wish the best of luck to the entrants that have made it to the on site round at FB headquarters in Palo Alto.&nbsp; I'll be back next year.</p>

@@ -1,0 +1,76 @@
+---
+layout: post
+status: publish
+published: true
+title: Visual Studio 2010 Solution Won't Open From Explorer
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 73
+wordpress_url: http://www.richardfawcett.net/2011/02/18/visual-studio-2010-solution-wont-open-from-explorer/
+date: '2011-02-18 10:52:00 +0000'
+date_gmt: '2011-02-18 10:52:00 +0000'
+categories:
+- Programming
+tags:
+- Programming
+- Visual Studio
+- Solution Files
+comments:
+- id: 444
+  author: J-L
+  author_email: jl_post@hotmail.com
+  author_url: ''
+  date: '2011-11-23 19:11:57 +0000'
+  date_gmt: '2011-11-23 19:11:57 +0000'
+  content: |
+    <p>Prepending  the BOM (Byte Order Mark) to the solution file worked for me.  As it turns out, someone had hand-edited the solution file a few days earlier with an editor that apparently didn't preserve the BOM.</p>
+
+    <p>So after reading this post (thank you for posting it -- it was a big help), I opened the solution file with a hex editor, inserted EF BB BF at the beginning of the file, and saved the file.  After that, the solution file opened just fine by double-clicking on it.</p>
+- id: 445
+  author: Richard
+  author_email: r_d_fawcett@hotmail.com
+  author_url: ''
+  date: '2011-11-23 19:38:06 +0000'
+  date_gmt: '2011-11-23 19:38:06 +0000'
+  content: '<p>Glad it helped. I prefer using Notepad++ to add the BOM, but I appreciate
+    the "rawness" of using a hex editor to do this - nice job!</p>
+
+'
+- id: 1509
+  author: Isxek
+  author_email: isxek@live.com
+  author_url: ''
+  date: '2012-04-29 16:02:16 +0000'
+  date_gmt: '2012-04-29 15:02:16 +0000'
+  content: Thanks for this - reverting the line endings in one of my solution files
+    made it readable again with VS 2010.
+---
+<p>This one has caused me some problems recently.&nbsp; I have a Visual Studio solution I downloaded, yet double clicking on the solution file in Windows Explorer does not open the solution.</p>
+<p>I know it's a Visual Studio 2010 solution, because the file starts with:</p>
+<pre class="brush: plain;">Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+</pre>
+<p><br>If I open Visual Studio 2010 and open the solution from within the editor, it works fine.&nbsp; This seemed to indicate that it was the way in which the Microsoft Visual Studio Version Selector was messed up somehow.</p>
+<p>I did some research online (I can't claim any independent breakthrough here myself) and thought I would collate the various reasons I found why the version selector might not be able to open a solution.</p>
+<h3>Visual Studio Runs as Administrator</h3>
+<p>If Visual Studio 2010 is set to run as administrator, and Visual Studio Version Selector is not, then the version selector does not have the necessary privileges to launch Visual Studio, and it silently fails. Thanks to <a href="http://www.jstawski.com/archive/2010/08/23/opening-solution-file-wonrsquot-start-visual-studio.aspx">Jonas Stawski</a> for this one.</p>
+<h3>Solution File was created in Visual Studio 2010 Beta 1</h3>
+<p>In Beta 1, the preamble to the solution file was as follows:</p>
+<pre class="brush: plain;">Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 10
+
+</pre>
+<p>Just change the 10 for 2010 on line 2, and away you go. Thanks to <a href="http://msmvps.com/blogs/jon_skeet/archive/2009/10/26/migrating-from-visual-studio-2010-beta-1-to-beta-2-solution-file-change-required.aspx">Jon Skeet</a> for this tip.</p>
+<h3>Solution File has Unix Line Endings</h3>
+<p>Some Source Control providers can automatically change line endings.&nbsp; If the line endings are set to Unix (LF) instead of Windows (CRLF), then the Version Selector gets confused and can't determine which version of Visual Studio to launch, and instead silently fails. Thanks to <a href="http://connect.microsoft.com/VisualStudio/feedback/details/248857/visual-studio-version-selector-fails-on-lf-formatted-sln-files">Oliver Mellet</a> for this.</p>
+<h3>Solution File is not UTF-8 Encoded</h3>
+<p>Solution Files must be encoded using UTF-8 and include the BOM at the start (which is EF BB BF).&nbsp; If these criteria aren't met, then the Version Selector can't determine which version of Visual Studio to launch.&nbsp; Notepad++ can fix this up (Encoding &ndash;> Convert to UTF-8).&nbsp; Thanks to <a href="http://connect.microsoft.com/VisualStudio/feedback/details/248857/visual-studio-version-selector-fails-on-lf-formatted-sln-files">anoftc</a> for this tip.</p>
+<h3>Summary</h3>
+<p>It seems that the Visual Studio Version Selector is very naive when trying to read solution files.&nbsp; I couldn't quite believe that the line endings would matter, or the encoding, so I had a play around in Notepad++ to verify the above.</p>
+<p>Microsoft recommends that solution files shouldn't be modified by hand, but I've had to do this on a number of occasions, particularly when trying to mess with source control bindings.&nbsp; Also, source control providers can make changes to files as they're checked in, so it seems unrealistic to me to have the limitation that solution files shouldn't be modified except by Visual Studio itself.</p>
+<p>I hope the above reasons help someone out.</p>

@@ -1,0 +1,139 @@
+---
+layout: post
+status: publish
+published: true
+title: Setting up a Mercurial Repository under IIS
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 76
+wordpress_url: http://www.richardfawcett.net/2011/04/26/setting-up-a-mercurial-repository-under-iis/
+date: '2011-04-26 16:52:00 +0000'
+date_gmt: '2011-04-26 15:52:00 +0000'
+categories:
+- Programming
+tags:
+- iis
+- Programming
+- mercurial
+comments:
+- id: 115
+  author: Jason
+  author_email: knott40@gmail.com
+  author_url: ''
+  date: '2011-04-29 18:38:43 +0000'
+  date_gmt: '2011-04-29 17:38:43 +0000'
+  content: "I followed these instructions however I get the following error:\r\n\r\nHTTP
+    Error 502.2 - Bad Gateway\r\nThe specified CGI application misbehaved by not returning
+    a complete set of HTTP headers. The headers it did return are \"Traceback (most
+    recent call last): File \"C:\\hgrepo\\hgweb.cgi\", line 15, in  from mercurial
+    import demandimport; demandimport.enable() ImportError: No module named mercurial
+    \"\r\n\r\nAny ideas what's going on?"
+- id: 119
+  author: Richard
+  author_email: r_d_fawcett@hotmail.com
+  author_url: ''
+  date: '2011-04-30 22:07:54 +0000'
+  date_gmt: '2011-04-30 21:07:54 +0000'
+  content: |-
+    @Jason, sorry to hear you're having trouble.
+
+    I tested this on a fresh machine and managed to get the same error message when the Mercurial Python 2.6 Package was not installed. To get the message about an incomplete set of HTTP headers is good news as you're on the right track... it means that Python is being called from IIS successfully. If you want to see more detail on a Python error, you can uncomment the line: import cgitb; cgitb.enable() in index.py / hgweb.cgi.  However, in this specific case, it yields little or no extra info.
+
+    First thing that could have caught you out... the Mercurial Python package requires Python 2.6.  The current version of Python 2 is Python 2.7.1, but this is no good for our purposes. As for Python 3, forget it for now! :-)  So, ensure that you went to the download page I linked and get hold of Python 2.6.6.
+
+    Next, are you certain that you installed "Mercurial 1.8.2 Python 2.6 Package" and not some other version of Mercurial?  It's the eighth item in the list on http://mercurial.selenic.com/downloads/.  To check this, open a command prompt and cd to c:\Python26\Scripts (assuming you installed Python to the default install location).  This folder should contain a batch file called hg.bat.  If it does not, then you haven't installed the right Mercurial package.  Typing ".\hg.bat --version" in this location should report "Mercurial Distributed SCM (version 1.8.2)".
+
+    If you've installed Python 2.6 to a non-default location, or not used the Windows installer, you might have to tell the Mercurial package where to find your installation of Python 2.6.  However, using most of the default options, the Mercurial Python package should auto-detect your installation of Python 2.6 and install to the right location.
+
+    Hope this helps, let me know how you get on with it!
+- id: 121
+  author: Jason
+  author_email: knott40@gmail.com
+  author_url: ''
+  date: '2011-05-02 18:33:58 +0000'
+  date_gmt: '2011-05-02 17:33:58 +0000'
+  content: "Thanks for the thorough write up! I found that my issue was the version
+    of Mercurial that I had installed, when I installed the Mercurial 1.8.2 Python
+    2.6 Package it worked like a charm!\r\n\r\nThanks for this!"
+- id: 128
+  author: Marc
+  author_email: md@cairo.ag
+  author_url: http://www.cairo.ag
+  date: '2011-05-25 19:36:49 +0000'
+  date_gmt: '2011-05-25 18:36:49 +0000'
+  content: "thanks a lot for this!\r\nI just installed mercurial 1.8.3 with python
+    2.6.6 on my server 2008r2 :)"
+- id: 10320
+  author: Ryan Feiock
+  author_email: rfeiock@panpowered.com
+  author_url: http://www.panpowered.com
+  date: '2012-10-23 22:03:34 +0000'
+  date_gmt: '2012-10-23 21:03:34 +0000'
+  content: Great tutorial.  Everything worked well.  Now that I have it setup, I have
+    come across an issue that appears to be common where a single bad password will
+    cause the AD account to get locked out.  This was reported a while back, and I
+    read one post that it was fixed in 1.6, but I am running 2.3.2, and any time someone
+    fat fingers their password, even a single time, their AD account is locked.  Anyone
+    else experiencing this?  If so, any ideas for resolving it?
+- id: 24473
+  author: Richard
+  author_email: r_d_fawcett@hotmail.com
+  author_url: ''
+  date: '2012-12-17 21:45:13 +0000'
+  date_gmt: '2012-12-17 21:45:13 +0000'
+  content: Not seen this myself, sorry. Sometimes, on the web interface only, I've
+    noticed that I need to put my password in again several times for each page view,
+    which is a complete pain. Not found a solution for it, but I wonder if it's related
+    to the problem you've encountered. When pushing changes to the server, I'm not
+    having any authentication problems though.
+---
+<p>Setting up Mercurial to serve repositories using IIS has been on my to do list for months. I had a quick go at it late last year, but was thwarted by confusing solutions which quite frankly, just didn't work for me.</p>
+<p>Many walkthroughs mention using a file named hgwebdir.cgi, but as of Mercurial 1.6, this no longer exists. Some walkthroughs mention copying the contents of a library.zip file into the website, or placing .dll files in there too. Nothing like this worked for me, and it seemed ridiculously complex.</p>
+<p>Today, I've made a concerted effort to get things working, and guess what? It's REALLY EASY!</p>
+<p>Before you start though, you should consider whether you really want to do this. Take a look at <a title="BitBucket" href="http://bitbucket.org">BitBucket</a> which is a hosting site for Mercurial. It's ran by Atlassian and is completely free for up to five developers. If hosting your source code externally is not politically viable, you want more control over your repos, or you don't want to pay for BitBucket when scaling up beyond five users, then by all means follow the below instructions.</p>
+<p>OK, what do you need?</p>
+<ul>
+<li>A Windows server, with IIS6 or IIS7 setup, including the facility to use CGI scripts.</li>
+<li>Python 2.6.6 (available from <a title="http://www.python.org/download/releases/2.6.6" href="http://www.python.org/download/releases/2.6.6">http://www.python.org/download/releases/2.6.6</a>)</li>
+<li>Mercurial 1.8.2 Python 2.6 package &ndash; x86 Windows (available from <a href="http://mercurial.selenic.com/downloads/">http://mercurial.selenic.com/downloads/</a>)</li>
+<li>The Mercurial source release (also available from <a href="http://mercurial.selenic.com/downloads/">http://mercurial.selenic.com/downloads/</a>)</li>
+</ul>
+<p>And that's it.</p>
+<p>Note that the version numbers of Python must match. I dare say that future versions of the Mercurial Python package may specify version 2.7 of Python&hellip; if that's the case, just get Python 2.7.x instead.</p>
+<p>(<b>UPDATE:</b> On a 64-bit server, you can use the 64-bit version of Python and the 64-bit Python package without any issues. I've now repeated this exercise using Python 2.7.3 and Mercurial 2.3 Python 2.7 package.)</p>
+<p>So, the steps to carry out on the server were pretty simple:</p>
+<p>1. Install Python</p>
+<p>2. Install the Mercurial Python package</p>
+<p>3. Create a new web application in IIS.</p>
+<p>4. From the Mercurial source release, copy the file hgweb.cgi to your web application, and rename it index.py. You don't have to rename it, but I just think the extension .py accurately reflects that this is a Python script, and as it's going to be the default document of the website, "index" seems a good name for it.</p>
+<p>5. Create a subfolder called Repositories underneath your web application. This will be used to host your repositories.</p>
+<p>6. Create a new file called hgweb.config in your web application's folder. It's contents should be something like this:</p>
+<blockquote><p>[collections]<br>C:\PATH_TO_YOUR_WEB_APP\Repositories = C:\PATH_TO_YOUR_WEB_APP\Repositories</p>
+</blockquote>
+<p>7. Edit index.py so that the line which starts config = "some path" contains the full path to your hgweb.config file, i.e.:</p>
+<blockquote><p>config = "C:\PATH_TO_YOUR_WEB_APP\hgweb.config"</p>
+</blockquote>
+<p>8. Configure IIS as follows:</p>
+<blockquote><p>You'll need to set the default document for your application to index.py.</p>
+<p>You'll need to enable Basic Authentication for the web application and disable all other forms of authentication. Set the default domain to be the domain of your server, so that users don't need to qualify their usernames with the domain when logging on.</p>
+<p>In IIS7 you'll need to use Add Script Map&hellip; (under Hander Mappings) to map *.py requests to C:\Python26\python.exe %s %s.</p>
+<p>In IIS6, this is available by clicking "Configuration" on the Directory tab then adding a mapping so that "C:\Python26\python.exe" %s %s (note the quotes around the executable this time) is used to handle the extension py. Also in IIS6, you'll need to ensure that you have a web service extension for Python which is allowed and has the filename c:\Python26\python.exe %s %s.</p>
+</blockquote>
+<p>9. Create a test repository in your Repositories folder.</p>
+<p>10. Configure the test repository by editing its .hg\hgrc file to include:</p>
+<blockquote><p>[web]<br>allow_push = * # alternatively, a comma separated list of users with push privileges<br>allow_archive = zip # this allows users to download a .zip archive of the source code<br>push_ssl = false # this allows pushing over HTTP. You're advised to setup SSL though, and then remove this line</p>
+</blockquote>
+<p>11. On your client machine, test out the new repo by executing the following (the program will prompt you for your credentials which is just your domain account):</p>
+<blockquote><p>hg clone http://YOUR_SERVER/YOUR_APP_NAME/index.py/YOUR_REPO_NAME your_local_folder</p>
+</blockquote>
+<p>12. Make some changes, check them in and push back to the repository.</p>
+<p>13. Browse the repository in a web browser at http://YOUR_SERVER/YOUR_APP_NAME/</p>
+<h4>Exercises for the interested reader:</h4>
+<p>1. Setup URL rewriting so that the "index.py" part of your path is invisible. (<b>UPDATE:</b> my post <a href="/2012/09/05/using-url-rewrite">Using URL Rewrite in IIS7 to have all Requests Handled by a Script</a> shows you how.)</p>
+<p>2. Add a self-signed SSL certificate to your server, and get Mercurial to work with this (hint: Google for the hostfingerprints directive of Mercurial.ini).</p>
+<p>3. Enable public read-only access to your repo, but require a login to push changes (I've not figured this out myself yet, so please comment if you work it out!)</p>

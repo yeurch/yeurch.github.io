@@ -1,0 +1,32 @@
+---
+layout: post
+status: publish
+published: true
+title: Using URL Rewrite in IIS7 to have all Requests Handled by a Script
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 159
+wordpress_url: http://www.richardfawcett.net/?p=159
+date: '2012-09-05 10:45:50 +0000'
+date_gmt: '2012-09-05 09:45:50 +0000'
+categories:
+- General Computing
+tags:
+- iis
+- mercurial
+- iis 7
+- URL Rewrite
+comments: []
+---
+<p>In my post last year about <a href="/2011/04/26/setting-up-a-mercurial-repository-under-iis/">setting up Mercurial on IIS</a>, I left it as an exercise for the reader to allow it so that <code>index.py</code> could be left out of the URLs.  As an example, we want to be able to write <code>http://myserver/myrepo</code> instead of <code>http://myserver/index.py/myrepo</code>.</p>
+<p>Enter <b>URL Rewrite</b>!</p>
+<p>The easiest way to get URL Rewrite installed on your web server is to use <a href="http://www.microsoft.com/web/downloads/platform.aspx">Microsoft's Web Platform Installer</a>. Install and run it on your server, and choose to install <code>URL Rewrite 2.0</code>. (While you're at it, I'd also recommend installing <code>IIS Recommended Configuration</code> too).</p>
+<p>Now it's installed, you will get a "URL Rewrite" icon in IIS Manager when you select your website. Open it and choose to add a new, blank rule.</p>
+<p>Configuring the rule is easy, and we'll use a RegEx trick known as a negative look-ahead assertion.  In the match URL section, enter the pattern: <code>^(?!index.py)(.+)</code>.  In the Rewrite URL box, just enter: <code>index.py/{R:1}</code>. Leave all the other options as they are, give your rule a name, and hit apply (top right hand corner).</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2012/09/using-url-rewrite.png"><img src="http://www.richardfawcett.net/wp-content/uploads/2012/09/using-url-rewrite_thumb.png" alt="Creating a rule with URL Rewrite" title="Creating a rule with URL Rewrite" width="250" height="197" class="alignnone size-full wp-image-161" /></a></p>
+<p>That's all there is to it. The match is setup to match any URL which doesn't start with <code>index.py</code>, so now, any request that doesn't start with <code>index.py</code> will be rewritten so that <code>index.py</code> is inserted at the start of the path.</p>

@@ -1,0 +1,135 @@
+---
+layout: post
+status: publish
+published: true
+title: Installing Ruby for MongoDB Use on Windows
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 49
+wordpress_url: http://www.richardfawcett.net/2010/10/08/installing-ruby-for-mongodb-use-on-windows/
+date: '2010-10-08 22:45:23 +0000'
+date_gmt: '2010-10-08 23:45:23 +0000'
+categories:
+- Ruby
+tags:
+- ruby
+- mongodb
+- howto
+comments:
+- id: 1
+  author: Jon
+  author_email: jon.forums@gmail.com
+  author_url: ''
+  date: '2010-10-12 17:25:08 +0000'
+  date_gmt: '2010-10-12 16:25:08 +0000'
+  content: "FYI, the http://www.ruby-lang.org/en/downloads link also makes available
+    the easy-to-use RubyInstaller for Windows in the \"Ruby on Windows\" section.
+    \ As you mention, the main website for this project is http://rubyinstaller.org/\r\n\r\nThe
+    following\r\n<code>\r\ngem install bson_ext platform=ruby\r\n</code>\r\n\r\nforces
+    the bson_ext gem to be compiled from source (using the previously installed DevKit)
+    rather than attempting to install a binary gem that RubyGems \"thinks\" may be
+    appropriate for the platform.  This most often comes up as an issue when RubyGems
+    installs a Ruby 1.8 compatible binary gem for a Windows system running Ruby 1.9.x
+    when RubyGems really should have installed a Ruby 1.9 compatible binary gem.  This
+    is a known issue and why some gem authors (e.g. - Nokogiri) make available \"fat\"
+    binary gems for Ruby Windows users that support both Ruby 1.8 and 1.9.\r\n \r\nIt
+    would be great if you could share your Windows usage findings with the authors
+    of \"MongoDB in Action\" book so it can be updated before the official release.\r\n\r\nThanks
+    for the  post.\r\n\r\nJon"
+- id: 2
+  author: Richard
+  author_email: r_d_fawcett@hotmail.com
+  author_url: ''
+  date: '2010-10-13 10:54:46 +0000'
+  date_gmt: '2010-10-13 09:54:46 +0000'
+  content: "@Jon - thanks for your comment.\r\nI see now the RubyInstaller links on
+    ruby-lang.org are the same as those on rubyinstaller.org.  My problem was therefore
+    trying to install RubyGems on top of that.\r\nThanks for the explanation of the
+    <code>--platform</code> command line parameter for gem.  Very interesting.\r\nI've
+    shared my findings with the author on the book's forum page this morning, so hopefully
+    that will be helpful to them."
+- id: 3
+  author: Kyle Banker
+  author_email: kylebanker@gmail.com
+  author_url: http://kylebanker.com
+  date: '2010-10-13 16:10:21 +0000'
+  date_gmt: '2010-10-13 15:10:21 +0000'
+  content: It was helpful indeed. Thanks for the great writeup!
+- id: 380192
+  author: FirstJayne
+  author_email: utethow@h-mail.us
+  author_url: https://09Lizzie.blogspot.com
+  date: '2017-11-24 16:51:14 +0000'
+  date_gmt: '2017-11-24 16:51:14 +0000'
+  content: "I see you don't monetize your site, don't waste your traffic, you can
+    earn additional bucks every month \r\nbecause you've got high quality content.
+    If you want to know how to \r\nmake extra bucks, search for: Boorfe's tips best
+    adsense alternative"
+---
+<p>I've recently downloaded the first three chapters of Kyle Banker's "<a href="http://www.manning.com/banker/" target="_blank">MongoDB In Action</a>" from Manning's <a href="http://www.manning.com/about/meap" target="_blank">early access program</a>.&nbsp; So far, it's shaping up to be a great read.&nbsp; In it, Banker uses Ruby in his examples, and the MongoDB project provide an official Ruby driver to access MongoDB.&nbsp; Now, I'm pretty much a C# person through and through these days, but the C# driver for MongoDB is not officially supported.&nbsp; So, I decided to install Ruby so I could follow along with the examples in the book.&nbsp; Getting to a situation where everything just worked was a long, painful process, and I'd like to share my findings so others don't have to go through the same frustrations.</p>
+<h3>Getting and Installing MongoDB</h3>
+<p>This was the easiest part of the operation, despite Appendix A of the book (installing MongoDB) having not been written yet.&nbsp; MongoDB can be downloaded from <a href="http://www.mongodb.org/downloads">http://www.mongodb.org/downloads</a>.&nbsp; If you have a 64-bit operating system, it's really worth getting the 64-bit version, as the 32-bit version can only address around 2GB of data.&nbsp; MongoDB comes as a .zip file.&nbsp; At the time of writing, the latest stable release was version 1.6.3, which is what I got.</p>
+<p>I unzipped this file into "C:\Program Files" and then renamed the uncatchy folder mongodb-win32-i386-1.6.3 to plain old "MongoDB".&nbsp; Next, I added "C:\Program Files\MongoDB\bin" to the path environment variable.</p>
+<p>The final installation step is creating a folder for MongoDB to store its data.&nbsp; I created the folder "C:\MongoDBData" for this purpose.</p>
+<h3>Testing MongoDB</h3>
+<p>To start MongoDB, I typed the following at a command prompt:</p>
+<pre class="brush: js">mongod.exe --rest --dbpath c:\MongoDBData</pre>
+<p>The command prompt shows some status information telling me that the server is listening on port 27017 and the admin web interface is listening on port 28017.&nbsp; The --&shy;&shy;rest command line parameter is optional, but does seem to enable some more advanced features on the web interface, which I'm not going to cover here.</p>
+<p>Now, to test MongoDB, I ran the Mongo client by simply executing the command "Mongo".&nbsp; In its interactive shell, I entered the commands:</p>
+<pre class="brush: js;">use testdb
+db.foobar.save({foo: "bar"})
+db.foobar.count()
+db.foobar.find()</pre>
+<p>The count command output "1" to the console, and the find command printed:</p>
+<pre class="brush: js">{ "_id" : ObjectId("4caf963d1a58000000001bbb"), "foo" : "bar" }</pre>
+<p>This article isn't a tutorial on MongoDB, but if you see something like that (your ObjectId will differ) then all is well.&nbsp; Briefly, the code connects to the "testdb" database (creating it if it doesn't exist), then adds a new record to the "foobar" collection (creating it if it doesn't exist) and finally gets a count of rows in the collection and finally lists the row's data.&nbsp; The "_id" field is automagically added by MongoDB and is the collection's primary key.</p>
+<h3>Getting and Installing Ruby and the Mongo Driver</h3>
+<p>Banker's book points the reader to <a href="http://ruby-lang.org/en/downloads">http://ruby-lang.org/en/downloads</a> to install Ruby and then to <a href="http://docs.rubygems.org/read/chapter/3">http://docs.rubygems.org/read/chapter/3</a> to install Rubygems.&nbsp; That's what I did at first, and had all kinds of problems trying to install Rubygems, which is the package manager for Ruby.&nbsp; As we'll see later, it's used to install optional packages such as the MongoDB drivers.</p>
+<p>Instead of using Banker's URIs, I found the site <a href="http://rubyinstaller.org/downloads">http://rubyinstaller.org/downloads</a> which seems more geared to the Windows user.&nbsp; It explains that the RubyInstaller packages install both Ruby and Rubygems as part of the same install; no wonder I had problems trying to do a separate install of Rubygems.</p>
+<p>So, from the rubyinstaller website, I downloaded and installed Ruby 1.9.2-p0.&nbsp; To keep things simple, I decided to accept the default install path of "C:\Ruby192" and I also elected to add the Ruby executables to my path and to associate .rb and .rbw files with the Ruby installation.&nbsp; I decided not to install into "Program Files" to avoid any spaces in the path name.&nbsp; I'm not sure if this was necessary, but just thought I'd err on the side of caution.</p>
+<p>Now, on your start menu, underneath the Ruby folder, you'll have a Command Prompt with Ruby icon.&nbsp; I'm not sure what this does over and above a normal command prompt, but decided to use it, just to be sure.&nbsp; At this command prompt, to install the MongoDB driver, I typed:</p>
+<pre class="brush: js">gem install mongo</pre>
+<p>After a worryingly long time with no visual feedback until completion (it took around a minute, just be patient!), gem successfully installed two gems&hellip; mongo, and its dependency bson.&nbsp; BSON is a binary form of JSON, used by MongoDB to store its data and communicate over the network.</p>
+<h3>Testing Ruby and the Mongo Driver</h3>
+<p>The first thing I tried, was the ubiquitous "Hello, World!" program in Ruby.&nbsp; I created a file called hello.rb and entered the following:</p>
+<pre class="brush: ruby">puts "Hello, World!"</pre>
+<p>I ran it by typing ruby hello.rb at a command prompt.&nbsp; You guessed it&hellip; the output was "Hello, World!".&nbsp; It works!</p>
+<p>Now, more advanced&hellip; it's time to test out the Mongo driver. Ensure that the MongoDB server is still running (run it again if it's stopped).&nbsp; I created a file called mongotest.rb and entered the following:</p>
+<pre class="brush: ruby;">require 'rubygems'
+require 'mongo'
+
+@con = Mongo::Connection.new
+@testdb = @con['testdb']['foobar']
+puts @testdb.count()
+
+@cursor = @testdb.find()
+@cursor.each do |document|
+  puts document["foo"]
+end</pre>
+<p>These are effectively the same commands we entered at the MongoDB interactive shell earlier to test our database.&nbsp; Execute the script using the command "ruby mongotest.rb".&nbsp; The results returned should be the same as earlier&hellip; "1" and "bar".&nbsp; This proves we connected ok. However, there was a warning message displayed first about needing the gem bson_ext for optimum performance.&nbsp; A helpful message told me I could install it by typing "gem install bson_ext".&nbsp; Sadly, it wasn't that easy.</p>
+<h3>Installing bson_ext gem</h3>
+<p>Some gems have prebuilt Windows executables which are simply downloaded by the gem package manager.&nbsp; Some however, don't.&nbsp; These must be downloaded as source and built locally.&nbsp; As Ruby seems to be primarily a *nix oriented world, the gems require what is known as a "sane" environment in which to build.&nbsp; This means access on the path to various *nix tools like gcc and make.&nbsp; This being Windows, they're absent.</p>
+<p>In fact, trying to execute "gem install bson_ext" gives an exception stack trace along with the message "The compiler failed to generate an executable file. (RuntimeError) You have to install development tools first."</p>
+<p>So, after a fair bit of Googling / Binging (delete as appropriate), I found out that there is a development kit available which includes a good set of Unix build tools for just this purpose.&nbsp; It's available again from <a href="http://rubyinstaller.org/downloads">http://rubyinstaller.org/downloads</a>. The link I chose was DevKit-4.5.0-20100819-1536-sfx.exe.&nbsp; The page <a href="http://github.com/oneclick/rubyinstaller/wiki/development-kit">http://github.com/oneclick/rubyinstaller/wiki/development-kit</a> was an invaluable resource with detailed install instructions for the DevKit.&nbsp; In short, the instructions are:</p>
+<p>1. Run the downloaded executable (which is a self-extracting .zip file) and unzip to a path with no spaces in it.&nbsp; I chose "c:\DevKit".</p>
+<p>2. CD to the extract folder and run "ruby dk.rb init" to generate the file config.yml.</p>
+<p>3. Check that config.yml contains the path to your Ruby installation.&nbsp; If not, fix it up manually using the instructions in the comments in the .yml file.</p>
+<p>4. Run "ruby dk.rb install" to tell Ruby to use the DevKit in future.</p>
+<p>If everything worked, then executing</p>
+<pre class="brush: js">gem install bson_ext --platform=ruby</pre>
+<p>should install the bson_ext gem correctly.&nbsp; I'm not sure what the platform=ruby argument is for, but the page at github.com recommend its use.</p>
+<p>Now, rerun the command "ruby mongotest.rb" after using CD to get back to the directory your script is in.&nbsp; This time, you should get the results "1" and "bar" without any warning messages.</p>
+<h3>Further Problems, Unrelated to MongoDB</h3>
+<p>As I read further into "MongoDB In Action", Banker uses the gem "sinatra" to create a simple web application.&nbsp; Well, it turns out that sinatra doesn't yet work under Ruby 1.9.2 and an exception is thrown when running a script which uses sinatra.&nbsp; It seems that there are (as yet unreleased) patches in the trunk to fix this bug, and instead of getting the gem "sinatra", it was suggested I instead download the gem "sinatra-sinatra" and specify a different repository to the default one.&nbsp; However, this just seemed to move the problem further down the line and different errors were encountered.</p>
+<p>In order to get around this problem with sinatra, I had to go back to an earlier version of Ruby, version 1.9.1-p430.&nbsp; Once installed, I changed my path environment variable to point to this older version, and had to patch it with the DevKit again.&nbsp; In my opinion, that the new version of Ruby breaks sinatra means that there is something seriously wrong with either Ruby or sinatra.</p>
+<h3>Summary</h3>
+<p>We've installed and tested MongoDB which was a relatively simple process.&nbsp; Ruby proved not to be so simple.&nbsp; My opinion is that Ruby is primarily designed for use in a *nix environment, and making it work on Windows can be a fine art.&nbsp; While the instructions above seem relatively straight-forward, it took a fair bit of research to arrive at this "path of least resistance" to getting everything installed.</p>
+<p>As I continued to explore Ruby and install additional packages, I encountered version incompatibilities; an Internet search suggests there may be many incompatibilities out there.&nbsp; This is a real shame, and the community would be well-served to get this kind of problem sorted out.&nbsp; These incompatibilities serve as a high barrier of entry for newcomers to Ruby like myself, and I nearly decided to give up before I'd really got started.</p>
+<p>As the Kaiser Chiefs sang in their hit single Ruby: "Ruby, Ruby, Ruby, Ruby, Do ya, do ya, do ya, do ya, Know what ya doing, doing to me? Could it be, could it be, that you're joking with me, And you don't really see you with me."&nbsp; Fitting, I thought.</p>
+<p>I hope my findings are of some use to you, and that you enjoy your explorations into the world of Ruby.</p>
+<p>From what I've seen so far of the book "MongoDB In Action", it's shaping up to be an excellent book, and well worth a read.</p>

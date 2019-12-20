@@ -1,0 +1,153 @@
+---
+layout: post
+status: publish
+published: true
+title: Excel with Stored Procedures
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 11
+wordpress_url: http://www.richardfawcett.net/2010/08/29/excel-with-stored-procedures/
+date: '2010-08-29 14:28:58 +0000'
+date_gmt: '2010-08-29 15:28:58 +0000'
+categories:
+- SQL
+tags: []
+comments:
+- id: 387
+  author: nicolas
+  author_email: nicolas@brainpowered.net
+  author_url: http://www.brainpowered.net
+  date: '2011-11-08 13:07:29 +0000'
+  date_gmt: '2011-11-08 13:07:29 +0000'
+  content: |
+    <p>thanks a bunch.
+    i had a discussion about this with a colleague and your article has solved the dispute.</p>
+- id: 1058
+  author: Adrian
+  author_email: adrian_smollett@yahoo.co.uk
+  author_url: ''
+  date: '2012-03-02 11:48:10 +0000'
+  date_gmt: '2012-03-02 11:48:10 +0000'
+  content: "Cheers\r\n\r\nWas having major headaches with msquery, being able to do
+    it this way should save me a lot of wasted time and aspirin"
+- id: 2234
+  author: Jim
+  author_email: jim.lehmer@gmail.com
+  author_url: http://ednortonengineeringsociety.blogspot.com
+  date: '2012-06-18 18:44:15 +0000'
+  date_gmt: '2012-06-18 17:44:15 +0000'
+  content: Perfect. Helped me a lot. Thanks!
+- id: 36017
+  author: Sascha
+  author_email: sascha.kruening@gmail.com
+  author_url: ''
+  date: '2012-12-30 17:02:41 +0000'
+  date_gmt: '2012-12-30 17:02:41 +0000'
+  content: "very good Richard. It works the same way in Excel 2010.\r\nHave you got
+    an advice for providing a selection box to choose a value from which then serves
+    as one of the input parameters?\r\nThis selection shall replace a \"simple cell\"
+    as the storage for a parameter.\r\n\r\nThanks\r\nSascha"
+- id: 44297
+  author: New2ExcelSQL
+  author_email: venkata.kuruganti@yahoo.com
+  author_url: ''
+  date: '2013-01-09 20:08:09 +0000'
+  date_gmt: '2013-01-09 20:08:09 +0000'
+  content: How do you pass multiple parameters instead of just 1?
+- id: 79288
+  author: HighOBP
+  author_email: tdtemple@gmail.com
+  author_url: ''
+  date: '2013-07-01 14:43:50 +0000'
+  date_gmt: '2013-07-01 13:43:50 +0000'
+  content: In Excel 2010, I was able to pass multiple parameters by using "exec dbo.GetProductsForCategory
+    ?,?,? ". I had to leave a space after the final question mark to get it to prompt
+    for the third parameter.
+- id: 382371
+  author: iqfinance.ru//
+  author_email: willian.shoebridge@gmail.com
+  author_url: https://iqfinance.ru/
+  date: '2018-10-26 15:36:47 +0000'
+  date_gmt: '2018-10-26 14:36:47 +0000'
+  content: "В ней нужно ввести данные об имени,\r\nдату рождения и пол, а также предоставить
+    мобильный телефон, по которому наши сотрудникинезамедлительно перезвонят для уточнения
+    деталей."
+- id: 385621
+  author: Dawn Kitchen
+  author_email: dawn.kitchen@gmail.com
+  author_url: ''
+  date: '2019-11-29 16:08:25 +0000'
+  date_gmt: '2019-11-29 16:08:25 +0000'
+  content: "Are you looking for powerful online promotion that isn't completely full
+    of it? Sorry to bug you on your contact form but actually that was kinda the point.
+    We can send your promotional text to websites via their contact forms just like
+    you're receiving this ad right now. You can specify targets by keyword or just
+    execute bulk blasts to websites in the country of your choice. So let's say you
+    want to push through a message to all the plumbing companies in the United States,
+    we'll grab websites for just those and post your advertisement to them. Providing
+    you're advertising some kind of offer that's relevant to that type of business
+    then you'll get an awesome result! \r\n\r\nSend a quick message to sarah1916eva@gmail.com
+    to get info and prices"
+---
+<h3>Introduction</h3>
+<p>A couple of week ago, I read <a href="http://www.sqlservercentral.com/articles/Stored+Procedures/63537/" target="_blank">this post</a> by David Poole about reading data from SQL Server into Excel, where the data source was a parameterised stored procedure.&nbsp; David concludes that a small amount of (albeit trivial) VBA code is required in order to make this work.&nbsp; However, deep down in my psyche, I knew I&rsquo;d been able to do this without writing any VBA code.&nbsp; So, after a bit of playing around, I&rsquo;ve managed to solve the problem.</p>
+<p>For the purposes of this document, I&rsquo;ve setup a really simple database for us to use, using the following script.</p>
+<pre class="brush: sql;">CREATE DATABASE xlsproc
+GO
+USE xlsproc
+GO
+CREATE TABLE [TestTable](
+    [ID] INT NOT NULL IDENTITY(1,1),
+    [Category] VARCHAR(30) NOT NULL,
+    [Product] VARCHAR(30) NOT NULL,
+    [ListPrice] INT NOT NULL,
+    PRIMARY KEY ([ID])
+)
+GO
+INSERT INTO \[TestTable\]\(\[Category\],\[Product\],\[ListPrice\]\)
+VALUES ('Cat A', 'Product A1', 234)
+INSERT INTO \[TestTable\]\(\[Category\],\[Product\],\[ListPrice\]\)
+VALUES ('Cat A', 'Product A2', 337)
+INSERT INTO \[TestTable\]\(\[Category\],\[Product\],\[ListPrice\]\)
+VALUES ('Cat B', 'Product B1', 653)
+INSERT INTO \[TestTable\]\(\[Category\],\[Product\],\[ListPrice\]\)
+VALUES ('Cat B', 'Product B2', 132)
+GO
+CREATE INDEX [idx_TestTable_Category] on \[TestTable\]\(\[Category\]\)
+GO
+CREATE PROCEDURE [dbo].[GetProductsForCategory]
+    @Category VARCHAR(30)
+AS
+    SELECT [ID], [Product], [ListPrice]
+    FROM [TestTable]
+    WHERE [Category] = @Category
+GO
+</pre>
+<p>Our objective is to allow users to enter a value into a cell in Excel, and have this value passed to the GetProductsForCategory stored procedure, and the results returned to Excel.</p>
+<h3>Querying with Excel 2007</h3>
+<p>I&rsquo;m using Excel 2007, and the process has been made significantly easier since Excel 2003.&nbsp; To start, we&rsquo;ll set up a cell on our spreadsheet which will contain our parameter.&nbsp; Something like this should suffice:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures1.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures1" border="0" alt="ExcelStoredProcedures1" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures1_thumb.png" width="244" height="155"></a> </p>
+<p>To get data into our spreadsheet, we choose &ldquo;Get External Data &ndash;>&nbsp; From Other Sources &ndash;> From Microsoft Query&rdquo; from the Data tab on the ribbon:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures2.png"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="ExcelStoredProcedures2" border="0" alt="ExcelStoredProcedures2" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures2_thumb.png" width="244" height="154"></a> </p>
+<p>We don&rsquo;t use the From SQL Server option, as this will not allow us to write queries with parameters later on.&nbsp; From the next dialog box, choose <New Query Source> and setup the connection appropriately, as per the next series of images.&nbsp; In particular, note that in the SQL Server Login box, we extend the options and choose our xlsproc database.</p>
+<p>&nbsp;<a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures3.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures3" border="0" alt="ExcelStoredProcedures3" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures3_thumb.png" width="244" height="130"></a>&nbsp; <a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures4.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures4" border="0" alt="ExcelStoredProcedures4" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures4_thumb.png" width="244" height="191"></a>&nbsp; <a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures5.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures5" border="0" alt="ExcelStoredProcedures5" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures5_thumb.png" width="244" height="224"></a> </p>
+<p>Now, we have our data source setup, so we select it and for now, we add the columns from TestTable to our query results:</p></p></p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures6.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures6" border="0" alt="ExcelStoredProcedures6" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures6_thumb.png" width="244" height="152"></a> </p>
+<p>Click Next through the rest of the wizard pages and choose finish.&nbsp; Choose to put the result set in cell A3.&nbsp; This gives us a worksheet looking like the following:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures7.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures7" border="0" alt="ExcelStoredProcedures7" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures7_thumb.png" width="244" height="198"></a> </p>
+<p>Now, from the Data ribbon, choose &ldquo;Connections&rdquo; and then click the &ldquo;Properties&hellip;&rdquo; button.&nbsp; On the &ldquo;Definition&rdquo; tab of the resulting dialog box, edit our command text to read &ldquo;exec dbo.GetProductsForCategory ?&rdquo;.&nbsp; Note the question mark.&nbsp; This tells Excel that we will supply a parameter to be used here.</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures8.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures8" border="0" alt="ExcelStoredProcedures8" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures8_thumb.png" width="203" height="244"></a> </p>
+<p>Excel will kindly ask us to provide details of the parameter:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/image.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="image" border="0" alt="image" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/image_thumb.png" width="244" height="144"></a> </p>
+<p>Note that we choose the cell we&rsquo;ve already setup to contain the parameter, and check both of the options in order that whenever we change the value in cell B1, the dataset will update itself.</p></p></p>
+<h3>Querying with Excel 2003</h3>
+<p>The process for Excel 2003 is similar.&nbsp; As there is no ribbon, the command to start getting data is from the menu item &ldquo;Data &ndash;> Get External Data &ndash;> New Database Query&rdquo;.&nbsp; We then specify our data source as with 2007.</p>
+<p>However, on the last step of the wizard, rather than pressing finish, we choose to edit or view our query in Microsoft Query.&nbsp; At this stage, we then press the SQL button, and type in a sample query using the stored procedure. Unlike in 2007, we can&rsquo;t just throw a question mark in at this point:</p>
+<p>&nbsp;<a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures10.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures10" border="0" alt="ExcelStoredProcedures10" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures10_thumb.png" width="244" height="140"></a>  <a href="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures11.png"><img style="border-bottom: 0px; border-left: 0px; display: inline; border-top: 0px; border-right: 0px" title="ExcelStoredProcedures11" border="0" alt="ExcelStoredProcedures11" src="http://www.richardfawcett.net/wp-content/uploads/2010/08/ExcelStoredProcedures11_thumb.png" width="244" height="119"></a> </p>
+<p>After clicking OK, you now need to choose &ldquo;File &ndash;> Return data to Microsoft Excel&rdquo;. Now, unfortunately, I no longer have a copy of Excel 2003 installed, so from memory, once the data has been returned to Excel, from the Tools &ndash;> Macro menu, choose Microsoft Script Editor.</p>
+<p>Then, on the script search for the command you entered above (i.e. the &ldquo;exec dbo.GetProductsForCategory &lsquo;Cat A&rsquo;&rdquo; string).&nbsp; Replace the &ldquo;&rsquo;Cat A&rsquo;&rdquo; with a ?.&nbsp; Note that we don&rsquo;t put single quotes around the exclamation mark.&nbsp; Now, save this.&nbsp; When you go back to the Excel worksheet, the program will prompt you for the parameter, just like in Excel 2007.</p>

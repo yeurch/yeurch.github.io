@@ -1,0 +1,113 @@
+---
+layout: post
+status: publish
+published: true
+title: Why I Never Use SELECT * FROM
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 45
+wordpress_url: http://www.richardfawcett.net/2010/09/20/why-i-never-use-select-from/
+date: '2010-09-20 15:37:08 +0000'
+date_gmt: '2010-09-20 16:37:08 +0000'
+categories:
+- SQL
+tags: []
+comments: []
+---
+<p>I&rsquo;ve heard for many years that using SELECT * FROM <some table> is a bad idea.&nbsp; I&rsquo;ve always agreed with this in principle, but in practice often haven&rsquo;t followed this guideline.&nbsp; That&rsquo;s all about to change, as I was caught out by what (in my opinion) is a bug in Microsoft SQL Server that totally blew my mind.</p>
+<p>I&rsquo;d always thought the only reason why SELECT * FROM was frowned upon was that it returned an unnecessarily large amount of data from the server, and client applications will typically want to consume only a handful of the returned columns.&nbsp; This opinion was changed when I came across the bug I describe in this post.</p>
+<p>Consider the following table and view:</p>
+<pre class="brush: sql;">use tempdb
+go
+
+create table [A](
+    [ID] int not null identity(1,1),
+    [ColA] nvarchar(100) null,
+    [ColB] nvarchar(100) null,
+    [ColC] nvarchar(100) null,
+    CONSTRAINT [PK_A] PRIMARY KEY ([ID])
+)
+go
+
+insert into A([ColA], [ColB], [ColC])
+values
+    ('ColA Val1','ColB Val1','ColC Val1'),
+    ('ColA Val2','ColB Val2','ColC Val2'),
+    ('ColA Val3','ColB Val3','ColC Val3'),
+    ('ColA Val4','ColB Val4','ColC Val4')
+go
+
+create view [AView]
+as
+    SELECT * FROM [A]
+go</pre>
+<p>If we were then to run the View, we get results as expected.</p>
+<p>Now, imagine there&rsquo;s a requirement to add a new column to the table [A], somewhere in the middle of the list of columns above.&nbsp; For example, we want a new column called [NewCol] of type int, with default &ndash;1, between [ColB] and [ColC].&nbsp; We can either make this change in SQL Server Management Studio, or else run the below script (which was generated from within SSMS).</p>
+<pre class="brush: sql;">CREATE TABLE [Tmp_A]
+    (
+    [ID] int NOT NULL IDENTITY (1, 1),
+    [ColA] nvarchar(100) NULL,
+    [ColB] nvarchar(100) NULL,
+    [NewCol] int NOT NULL DEFAULT -1,
+    [ColC] nvarchar(100) NULL
+    )  ON [PRIMARY]
+GO
+
+SET IDENTITY_INSERT [Tmp_A] ON
+GO
+INSERT INTO [Tmp_A] ([ID], [ColA], [ColB], [ColC])
+        SELECT [ID], [ColA], [ColB], [ColC] FROM [A]
+GO
+SET IDENTITY_INSERT [Tmp_A] OFF
+GO
+DROP TABLE [A]
+GO
+EXECUTE sp_rename N'Tmp_A', N'A', 'OBJECT'
+GO
+ALTER TABLE [A] ADD CONSTRAINT
+    [PK_A] PRIMARY KEY CLUSTERED (ID)
+GO</pre>
+<p>Now, if were to execute a select on [AView], we get some rather unexpected results:</p>
+<table border="1" cellspacing="0" cellpadding="2" width="400">
+<tbody>
+<tr>
+<td width="100" valign="top">ID</td>
+<td width="100" valign="top">ColA</td>
+<td width="100" valign="top">ColB</td>
+<td width="100" valign="top">ColC</td>
+</tr>
+<tr>
+<td width="100" valign="top">1</td>
+<td width="100" valign="top">ColA Val1</td>
+<td width="100" valign="top">ColB Val1</td>
+<td width="100" valign="top">-1</td>
+</tr>
+<tr>
+<td width="100" valign="top">2</td>
+<td width="100" valign="top">ColA Val2</td>
+<td width="100" valign="top">ColB Val2</td>
+<td width="100" valign="top">-1</td>
+</tr>
+<tr>
+<td width="100" valign="top">3</td>
+<td width="100" valign="top">ColA Val3</td>
+<td width="100" valign="top">ColB Val3</td>
+<td width="100" valign="top">-1</td>
+</tr>
+<tr>
+<td width="100" valign="top">4</td>
+<td width="100" valign="top">ColA Val4</td>
+<td width="100" valign="top">ColB Val4</td>
+<td width="100" valign="top">-1</td>
+</tr>
+</tbody>
+</table>
+<p>What has happened is that the view outputs the heading columns that were in place at the time the view was created, but the data is taken from the first four columns of the underlying table, which now includes the new column [NewCol] instead of [ColC].</p>
+<p>My client application was attempting to read the column [ColC] from the returned dataset and was producing unexpected results, as it was reading data from the underlying column [NewCol].</p>
+<p>My expectation would be that the view would either continue to return the four columns it originally did, or else return all five columns of data.&nbsp; Returning the original column headings but with the new data seems odd at best.</p>
+<p>What really surprised me is that the above sample causes the problem to occur in all versions of SQL Server from at least SQL Server 2000 right through to 2008.</p>

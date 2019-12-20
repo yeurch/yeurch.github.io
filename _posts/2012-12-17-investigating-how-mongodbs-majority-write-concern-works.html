@@ -1,0 +1,132 @@
+---
+layout: post
+status: publish
+published: true
+title: Investigating How MongoDB's "Majority" Write Concern Works
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 179
+wordpress_url: http://www.richardfawcett.net/?p=179
+date: '2012-12-17 21:34:05 +0000'
+date_gmt: '2012-12-17 21:34:05 +0000'
+categories:
+- MongoDB
+tags:
+- mongodb
+- NoSQL
+- Replica Sets
+comments:
+- id: 72422
+  author: Malik
+  author_email: malikq2008@yahoo.com
+  author_url: ''
+  date: '2013-04-11 09:35:23 +0000'
+  date_gmt: '2013-04-11 08:35:23 +0000'
+  content: "Hi, i have a question about the set replica. can u help me??\r\nSuppose
+    you have a three node replica set. Node 1 is the primary. Node 2 is a secondary,
+    Node 3 is a secondary running with a delay of 10 seconds. All writes to the database
+    are issued with w=majority and j=1 (by which we mean that the getLastError call
+    has those values set).\r\n\r\nA write operation (could be insert or update) is
+    initiated from your application at time=0. At time=5 seconds, the primary, Node
+    1, goes down for an hour and another node is elected primary.\r\n\r\nWill there
+    be a rollback of data when Node 1 comes back up? Choose the best answer.\r\n1)Yes,
+    always 2)No,never 3)Maybe,it depends on whether Node 3 has processed the write.4)Maybe,
+    it depends only on whether Node 2 has processed the write. \r\nThanks"
+- id: 128043
+  author: Sam
+  author_email: me@samk3nny.com
+  author_url: http://www.samk3nny.com
+  date: '2014-03-21 03:07:38 +0000'
+  date_gmt: '2014-03-21 03:07:38 +0000'
+  content: Malik - have you by any chance been studying at MongoUniversity?  ;)
+- id: 379765
+  author: 83Deborah
+  author_email: abbiegrishin@gmail.com
+  author_url: https://CallumRockz.blogspot.com
+  date: '2017-08-15 00:59:05 +0000'
+  date_gmt: '2017-08-14 23:59:05 +0000'
+  content: "Hello blogger, i must say you have high quality articles here.\r\nYour
+    website can go viral. You need initial traffic boost only.\r\n\r\nHow to get it?
+    Search for: Mertiso's tips go viral"
+- id: 384017
+  author: suba me
+  author_email: email@gmail.com
+  author_url: https://www.suba.me/
+  date: '2019-06-25 23:09:33 +0000'
+  date_gmt: '2019-06-25 22:09:33 +0000'
+  content: ewkvgn imp source I want to start selling hair bows. How do I get a website
+    started and what are the costs?. How do I design it?.
+---
+<h2>Introduction</h2>
+<p>I've recently been studying an <a href="http://education.10gen.com">online MongoDB course</a> from 10gen, the developers of MongoDB.  MongoDB is a <a href="http://en.wikipedia.org/wiki/NoSQL">NoSQL</a> database which offers a ton of features, including replica sets with automatic failover.</p>
+<p>This isn't a beginner's HOWTO on MongoDB; for that, head over to <a href="http://www.mongodb.org">mongodb.org</a> and hit the "Try It Out" button.  Instead, the article is to address a question asked on the 10gen course forums, posed by @Kajten entitled <strong>w = 'majority'</strong>...</p>
+<blockquote>
+<p>In documentation we have - This ensures that write operation will never be subject to a rollback in the course of normal operation.</p>
+<p>If happens some kind network error or server down - this flag 100% guaranteed that rollback not will be or if data dont write maybe rollback ?</p>
+</blockquote>
+<p>For a little bit of background, one server in a MongoDB replica set is classed as the primary, and all writes must go to this.  The primary then uses aynchronous replication to send the writes to the secondary servers in a set.  We can set what is known as <em>write concern</em> to ensure that our writes are received by a minimum number of servers, throwing an error if that doesn't occur.</p>
+<p>The MongoDB documentation makes a claim that if we set the write concern (<em>w</em>) to "majority", then even after network issues or servers going down, then the write will be persisted through the problems, and is guaranteed not to be rolled back.</p>
+<h2>When do Rollbacks Normally Occur</h2>
+<p>A rollback would occur if we had a server which comes back online after an outage, and it contains data which the rest of the replica set are not aware of. Because there could be many other write operations carried out on the replica set while the server has been offline, it can't simply apply the write operations to the other servers, and so the write is rolled back.</p>
+<p>The rolled back write is not lost completely ... it's recorded in a rollback log on the server, but the complexity of re-applying such "lost" writes is so great, that it's generally not done.</p>
+<p>Instead, for writes of importance, it's typical to perform the writes with write concern of 'majority' in order that we know that it won't be subject to rollback.</p>
+<h2>Simple Case</h2>
+<p>In simple terms, it's quite easy to see why this would be the case. If we know for certain that the write was received by the majority of servers (the write concern "majority" proves that this happened) and then the primary fails, the remaining servers will "elect" a new primary server to take over.  However, they can only carry out such an election if the majority of servers are up and communicating with each other. So, when a new primary is elected, we know that the majority of servers received the write, and that the majority of servers are up. Simple maths ensures that we know that at least one of the servers still up received the write. MongoDB (under normal circumstances) will choose a new primary which has the latest version of the data, hence a server which has received the write. Put simply, the write will be persisted as the new primary has it.</p>
+<h2>A More Complex Example</h2>
+<p>I then started to think of some edge cases where the normal circumstances wouldn't be met. It's possible to configure a MongoDB server such that it can never be elected as a primary. I then envisaged a setup where I didn't quite know how the new primary would end up with the write. Consider a replica set with three nodes, as follows:</p>
+<ul>
+<li>Server A - PRIMARY</li>
+<li>Server B - SECONDARY</li>
+<li>Server C - SECONDARY (can not become primary)</li>
+</ul>
+<p>So, let's consider the following steps.</p>
+<ol>
+<li>Server B goes down.</li>
+<li>Data is written to the primary server with write conern 'majority'.</li>
+<li>The fact that this write succeeds means we know it was received by server C, but not B (as B is down).</li>
+<li>Server A goes down.</li>
+<li>No election takes place, as we don't have the majority of servers up.</li>
+<li>Server B comes back up.</li>
+<li>This triggers an election (we now have the majority of servers up) and server B is elected primary (C is configured so it cannot become primary).</li>
+<li>The new primary server does not have the write when it is elected.</li>
+<li>Server A (the old primary) comes back up. <em>Is the write which A and C are aware of rolled back at any point?</em></li>
+</ol>
+<h2>Running MongoDB to Investigate</h2>
+<p>The following steps work on Windows. To run on MacOS X or Linux, remove the "start" from the beginning of the commands to run Mongod (the Mongo server process) and add the <code>--fork</code> switch which achieves the same, but is not available on Windows.</p>
+<p>First, we'll fire up our three servers. We'll run them all on <code>localhost</code> and use different port numbers.</p>
+<pre><code>mkdir a
+mkdir b
+mkdir c
+start mongod --smallfiles --oplogSize 50 --replSet rs --dbpath a --port 27017
+start mongod --smallfiles --oplogSize 50 --replSet rs --dbpath b --port 27018
+start mongod --smallfiles --oplogSize 50 --replSet rs --dbpath c --port 27019
+</code></pre>
+<p>Now, we'll connect to our primary (which is running on the default port) by running <code>mongo</code>. At the Mongo shell prompt, we'll configure replication like this.</p>
+<pre><code>config = { _id: "rs", members: [
+    {_id: 0, host: "localhost:27017"},
+    {_id: 1, host: "localhost:27018"},
+    {_id: 2, host: "localhost:27019", priority:0}
+]}
+rs.initiate(config)
+</code></pre>
+<p>Running <code>rs.status()</code> periodically will show you the state of the set. Keep looking at the <code>members.stateStr</code> properties of the results of the status command. After around a minute, the replica set is configured and working properly, indicated by one server having the state of <code>PRIMARY</code> and two of them being <code>SECONDARY</code>. The prompt will eventually change to <code>rs:PRIMRAY></code> to indicate we're now connected to the primary server.</p>
+<p>Kill the second process by choosing its window and pressing <code>Ctrl-C</code> in it.</p>
+<p>Now, back in the Mongo shell, write some data like this ...</p>
+<pre><code>db.foo.insert({x:1})
+db.getLastError('majority',5000)
+</code></pre>
+<p>The <code>getLastError</code> call should return <code>null</code> if the insert was received by the majority of servers, and the 5000 means wait up to 5000 milliseconds before reporting a timeout.</p>
+<p>Kill server A, and then restart server B by typing the second <code>start mongod</code> command again at a command prompt.</p>
+<p>So, what happens?</p>
+<p>Server B is elected primary (as it's the only running server capable of becoming primary, and the majority of servers are up).  What's really interesting though is that server B checks its peers (only server C at this point) and determines that C has more recent data than it.  Server B then gets the write from the secondary server and applies it, bringing it up to date.</p>
+<p>This is unusual as we normally consider writes being propagated from the primary server to secondaries, yet in an election like this, it seems that primaries can actually pull data from secondary servers.</p>
+<p>Once the new primary becomes available, we can connect to is by running <code>mongo --port 27018</code>.  Then, at the shell, enter:</p>
+<pre><code>db.foo.find()
+</code></pre>
+<p>and you will see that the record with x=1 inserted above is returned. In other words, the data was persisted despite outages.</p>
+<p>I thought this technique of replicating recent data from secondaries to the primary was fascinating. Job well done MongoDB!</p>

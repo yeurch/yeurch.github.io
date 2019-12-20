@@ -1,0 +1,33 @@
+---
+layout: post
+status: publish
+published: true
+title: Estimating Effort
+author:
+  display_name: Richard
+  login: admin
+  email: r_d_fawcett@hotmail.com
+  url: ''
+author_login: admin
+author_email: r_d_fawcett@hotmail.com
+wordpress_id: 144
+wordpress_url: http://www.richardfawcett.net/?p=144
+date: '2012-04-20 15:21:16 +0000'
+date_gmt: '2012-04-20 14:21:16 +0000'
+categories:
+- General Computing
+tags:
+- estimation
+- statistics
+comments: []
+---
+<p>A few years ago, a former manager of mine taught me a valuable lesson about estimating the time it will take to complete a task in order to best meet expectations. Having done a significant amount of estimation recently, it brought the thought to the forefront of my mind.</p>
+<p>The tl;dr version is: <strong>Guess how long it will take and add a bit</strong>.</p>
+<p><em>Here comes the science bit &hellip; .</em></p>
+<p>Let&rsquo;s say that we&rsquo;re asked to work out how long it will take to implement a feature on the project we&rsquo;re working on. As an expert in the problem domain, we come up with the estimate that it will take 12 hours to complete. That&rsquo;s just an estimate, so it follows that it will likely take a bit less, or a bit more time. What we have is something akin to a <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> of the time it will take to complete the task. Maybe something like this:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2012/04/normal.png"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="normal" border="0" alt="normal" src="http://www.richardfawcett.net/wp-content/uploads/2012/04/normal_thumb.png" width="244" height="124"></a></p>
+<p>The problem is, if you tell your customer that it will take 12 hours to complete, that actually means that there&rsquo;s a <strong>50% chance you&rsquo;ll fail to deliver</strong>. Yes, you heard me, there&rsquo;s a 50% chance that you will not be finished when the clock ticks over to 12 hours. That&rsquo;s because half the area under the graph is to the right of 12 hours.&nbsp; In the following graph, the probability that you&rsquo;ll succeed to meet an estimate of 12 hours is shown highlighted in pink:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2012/04/normal_50.png"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="normal_50" border="0" alt="normal_50" src="http://www.richardfawcett.net/wp-content/uploads/2012/04/normal_50_thumb.png" width="244" height="124"></a></p>
+<p><strong>Don&rsquo;t set yourself up for failure like this</strong>. In this particular graph, the standard deviation of the curve is 1.5, but you will likely have a better feel of how accurate your estimates tend to be and can adjust your working accordingly. Now, in a normal distribution, around 95% of the area under the graph lies to the left of a point two standard deviations to the right of the mean. So, that&rsquo;s 12 hours + 2 * 1.5 hours = 15 hours.&nbsp; So, in other words, if you think it will take 12 hours, giving your customer an estimate of 15 hours means you&rsquo;re about 95% likely to meet, or exceed, that expectation.&nbsp; The graph becomes:</p>
+<p><a href="http://www.richardfawcett.net/wp-content/uploads/2012/04/normal_95.png"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top: 0px; border-right: 0px; padding-top: 0px" title="normal_95" border="0" alt="normal_95" src="http://www.richardfawcett.net/wp-content/uploads/2012/04/normal_95_thumb.png" width="244" height="124"></a></p>
+<p>No-one wants a failure rate of 50%, but 5% &hellip; not so bad.</p>
