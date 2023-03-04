@@ -1,23 +1,8 @@
 ---
 layout: post
-status: publish
-published: true
 title: Why I Never Use SELECT * FROM
-author:
-  display_name: Richard
-  login: admin
-  email: r_d_fawcett@hotmail.com
-  url: ''
-author_login: admin
-author_email: r_d_fawcett@hotmail.com
-wordpress_id: 45
-wordpress_url: http://www.richardfawcett.net/2010/09/20/why-i-never-use-select-from/
-date: '2010-09-20 15:37:08 +0000'
-date_gmt: '2010-09-20 16:37:08 +0000'
-categories:
-- SQL
-tags: []
-comments: []
+tags:
+- sql
 ---
 <p>I&rsquo;ve heard for many years that using SELECT * FROM <some table> is a bad idea.&nbsp; I&rsquo;ve always agreed with this in principle, but in practice often haven&rsquo;t followed this guideline.&nbsp; That&rsquo;s all about to change, as I was caught out by what (in my opinion) is a bug in Microsoft SQL Server that totally blew my mind.</p>
 <p>I&rsquo;d always thought the only reason why SELECT * FROM was frowned upon was that it returned an unnecessarily large amount of data from the server, and client applications will typically want to consume only a handful of the returned columns.&nbsp; This opinion was changed when I came across the bug I describe in this post.</p>

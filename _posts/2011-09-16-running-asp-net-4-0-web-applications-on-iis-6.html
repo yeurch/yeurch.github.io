@@ -1,56 +1,11 @@
 ---
 layout: post
-status: publish
-published: true
 title: Running ASP.NET 4.0 Web Applications on IIS 6
-author:
-  display_name: Richard
-  login: admin
-  email: r_d_fawcett@hotmail.com
-  url: ''
-author_login: admin
-author_email: r_d_fawcett@hotmail.com
-wordpress_id: 94
-wordpress_url: http://www.richardfawcett.net/2011/09/16/running-asp-net-4-0-web-applications-on-iis-6/
-date: '2011-09-16 15:58:00 +0000'
-date_gmt: '2011-09-16 14:58:00 +0000'
-categories:
-- ASP.NET
 tags:
 - Windows Server 2003
 - ASP.NET 4.0
 - IIS 6
 - MVC3
-comments:
-- id: 268
-  author: Mikel
-  author_email: surfermikel@gmail.com
-  author_url: ''
-  date: '2011-09-30 17:28:10 +0000'
-  date_gmt: '2011-09-30 16:28:10 +0000'
-  content: "<p>Did you ever get nuget to work?  I came here hoping for some luck with
-    that...</p>\n"
-- id: 269
-  author: Richard
-  author_email: r_d_fawcett@hotmail.com
-  author_url: ''
-  date: '2011-09-30 17:52:13 +0000'
-  date_gmt: '2011-09-30 16:52:13 +0000'
-  content: |
-    <p>@Mikel,</p>
-
-    <p>Yes, absolutely. There are three ways to use NuGet, and I'm not going to assume anything about your technical ability, so if my answer is too simplistic, or overly complex, just let me know!</p>
-
-    <p>Firstly, I'd point out that for the vast majority of users there is no need to setup your own NuGet feed. The only reason you'd need to is if you want to host your own private packages, or your employer doesn't want developers to use the full public feed that's built-in to the package manager in Visual Studio.</p>
-
-    <p>If you do need your own feed, there are three ways you can go about this.
-    <ul>
-        <li>Firstly, you can just use a folder on your hard drive as a feed.
-        <li>Secondly, there's a NuGet package on the public feed called <a href="http://nuget.org/List/Packages/NuGet.Server" rel="nofollow">NuGet.Server</a> which is a simple web application which just serves .nupkg files which are dropped into a certain folder.  Nothing fancy. Instructions for doing this and the first method can be found <a href="http://docs.nuget.org/docs/creating-packages/hosting-your-own-nuget-feeds" rel="nofollow">here</a>.</li>
-        <li>Finally, there's a full blown clone of the <a href="http://nuget.org" rel="nofollow">NuGet gallery website</a> which you can setup. Details instructions for doing so can be found <a href="http://docs.nuget.org/docs/contribute/setting-up-a-local-gallery" rel="nofollow">here</a>.</li>
-    </ul></p>
-
-    <p>I took the final approach, and it worked well for me.</p>
 ---
 <p>Today, I decided to install a <a href="http://nuget.org">NuGet</a> gallery on our development server at work, in order that we can host our internal packages there, and make them easily available to all projects.&nbsp; The problem, our development server is not exactly state of the art, and runs Windows Server 2003 SP2 and IIS 6.0.&nbsp; It did <em>not</em> have ASP.NET 4.0 installed, which is a pre-requisite for the NuGet gallery application.</p>
 <p>I was expecting quite a battle to get .Net 4 installed, configured, and working on the server.&nbsp; My fears were unfounded.&nbsp; I <a href="http://www.microsoft.com/download/en/details.aspx?id=17851">ran the installer</a>, rebooted, created a virtual directory, set it to ASP.NET version 4.0 (which required an IIS restart, more on this later), published the default "Welcome to ASP.NET" application, and voila!&nbsp; The result of a HEAD HTTP request to the new virtual directory (note the Server and X-AspNet-Version headers):</p>

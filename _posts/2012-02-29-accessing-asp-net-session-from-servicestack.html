@@ -1,48 +1,10 @@
 ---
 layout: post
-status: publish
-published: true
 title: Accessing ASP.NET Session from ServiceStack
-author:
-  display_name: Richard
-  login: admin
-  email: r_d_fawcett@hotmail.com
-  url: ''
-author_login: admin
-author_email: r_d_fawcett@hotmail.com
-wordpress_id: 123
-wordpress_url: http://www.richardfawcett.net/?p=123
-date: '2012-02-29 23:37:00 +0000'
-date_gmt: '2012-02-29 23:37:00 +0000'
-categories:
-- ASP.NET
 tags:
 - ServiceStack
 - WCF
 - web services
-comments:
-- id: 2023
-  author: Nagesh
-  author_email: nagesh.k29@gmail.com
-  author_url: ''
-  date: '2012-06-08 12:37:16 +0000'
-  date_gmt: '2012-06-08 11:37:16 +0000'
-  content: "Hi, \r\n\r\nI have implemented the SessionHttpHandlerFactory  and also
-    replaced the tags from web config.\r\n\r\n\r\n\r\nBut getting the forbidden response\r\n\r\nForbidden\r\nRequest.HttpMethod:
-    GET\r\nRequest.PathInfo: \r\nRequest.QueryString: format=json\r\nRequest.RawUrl:
-    /Services/Resource1?format=json\r\nApp.IsIntegratedPipeline: False\r\nApp.WebHostPhysicalPath:
-    D:\\APP\\AppName.Web\r\nApp.WebHostRootFileNames:[list of pages]\r\n\r\n\r\nthe
-    AppHost Configuration is also done from Global.asax but still the url does not
-    call service also f remove this Handler wrapper then this service url calls the
-    service"
-- id: 9458
-  author: Borysław
-  author_email: borysekpiggiotto@wp.pl
-  author_url: ''
-  date: '2012-10-05 11:20:41 +0000'
-  date_gmt: '2012-10-05 10:20:41 +0000'
-  content: "Maybe you could help me with StackOverflow question related to your article?
-    No one can help me \r\n\r\nhttp://stackoverflow.com/questions/12462276/testing-servicestack-services-with-custom-factory"
 ---
 <p><em>This content is based heavily upon an </em><a href="http://stackoverflow.com/questions/8339584/how-can-i-use-a-standard-asp-net-session-object-within-servicestack-service-impl/9193782#9193782"><em>answer</em></a><em> I posted on </em><a href="http://stackoverflow.com"><em>StackOverflow</em></a><em>. Oh, ok then, it&rsquo;s almost an exact copy.</em></p>
 <p>Recently, I&rsquo;ve ripped WCF out of the heart of a project at work, and replaced it with <a href="http://servicestack.net">ServiceStack</a>. There were a couple of reasons for doing this.&nbsp; Firstly, for the relatively simple API we wanted to expose, the configuration of endpoints and the like in `Web.config` for ServiceStack was overly complex, and also changed from client to client, depending on the base URL of their installation, and whether they ran our app over SSL or not.&nbsp; It was a maintenance headache, and broke several releases because of mis-configuration.</p>

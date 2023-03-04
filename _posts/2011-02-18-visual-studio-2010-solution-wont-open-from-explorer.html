@@ -1,54 +1,10 @@
 ---
 layout: post
-status: publish
-published: true
 title: Visual Studio 2010 Solution Won't Open From Explorer
-author:
-  display_name: Richard
-  login: admin
-  email: r_d_fawcett@hotmail.com
-  url: ''
-author_login: admin
-author_email: r_d_fawcett@hotmail.com
-wordpress_id: 73
-wordpress_url: http://www.richardfawcett.net/2011/02/18/visual-studio-2010-solution-wont-open-from-explorer/
-date: '2011-02-18 10:52:00 +0000'
-date_gmt: '2011-02-18 10:52:00 +0000'
-categories:
-- Programming
 tags:
 - Programming
 - Visual Studio
 - Solution Files
-comments:
-- id: 444
-  author: J-L
-  author_email: jl_post@hotmail.com
-  author_url: ''
-  date: '2011-11-23 19:11:57 +0000'
-  date_gmt: '2011-11-23 19:11:57 +0000'
-  content: |
-    <p>Prepending  the BOM (Byte Order Mark) to the solution file worked for me.  As it turns out, someone had hand-edited the solution file a few days earlier with an editor that apparently didn't preserve the BOM.</p>
-
-    <p>So after reading this post (thank you for posting it -- it was a big help), I opened the solution file with a hex editor, inserted EF BB BF at the beginning of the file, and saved the file.  After that, the solution file opened just fine by double-clicking on it.</p>
-- id: 445
-  author: Richard
-  author_email: r_d_fawcett@hotmail.com
-  author_url: ''
-  date: '2011-11-23 19:38:06 +0000'
-  date_gmt: '2011-11-23 19:38:06 +0000'
-  content: '<p>Glad it helped. I prefer using Notepad++ to add the BOM, but I appreciate
-    the "rawness" of using a hex editor to do this - nice job!</p>
-
-'
-- id: 1509
-  author: Isxek
-  author_email: isxek@live.com
-  author_url: ''
-  date: '2012-04-29 16:02:16 +0000'
-  date_gmt: '2012-04-29 15:02:16 +0000'
-  content: Thanks for this - reverting the line endings in one of my solution files
-    made it readable again with VS 2010.
 ---
 <p>This one has caused me some problems recently.&nbsp; I have a Visual Studio solution I downloaded, yet double clicking on the solution file in Windows Explorer does not open the solution.</p>
 <p>I know it's a Visual Studio 2010 solution, because the file starts with:</p>
