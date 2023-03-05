@@ -11,21 +11,23 @@ tags:
 <p>Well, nothing went wrong. Until today.</p>
 <p>I opened a Visual Studio 2010 solution which <b>has never even been opened in VS2012</b> and it won't build.</p>
 <p>The offending piece of code is when we have a <b>website project</b> (web application projects are unaffected), which contains a <code>table</code> element with <code>runat="server"</code>, and the table contains a <code>tbody</code> element.  See the following code for an example.</p>
-<pre><code>
-    <!DOCTYPE html>
-    <html xmlns="http://www.w3.org/1999/xhtml">
-    <head><title>Test</title></head>
-    <body>
-        <form id="form1">
-            <div>
-                <table id="tbl1">
-                    <tbody><tr><td>Boo!</td></tr></tbody>
-                </table>
-            </div>
-        </form>
-    </body>
-    </html>
-</code></pre>
+
+{% highlight html %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Test</title></head>
+<body>
+    <form id="form1">
+        <div>
+            <table id="tbl1">
+                <tbody><tr><td>Boo!</td></tr></tbody>
+            </table>
+        </div>
+    </form>
+</body>
+</html>
+{% endhighlight %}
+
 <p>A machine without VS2012 installed will build and run this without any complaints.  A machine with VS2012 installed will produce the following error message while building:</p>
 <p><code>Value of type 'System.Web.UI.HtmlControls.HtmlGenericControl' cannot be converted to 'System.Web.UI.HtmlControls.HtmlTableRow'.</code></p>
 <p>This is a pretty major breaking change, and it's left me in a situation where I can't build one of our core products. I can't believe that this wasn't picked up given Microsoft's focus on quality and the range of automated testing which is carried out.  Moreover, I just can't understand <b>how</b> installing VS2012 should break a VS2010 solution.</p>

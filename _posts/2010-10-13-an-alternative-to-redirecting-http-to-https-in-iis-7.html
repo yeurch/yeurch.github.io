@@ -22,7 +22,9 @@ tags:
 <p>To demonstrate the method, I&rsquo;ve started a website from scratch in order that you can see how simple this is.&nbsp; To start, I created a new virtual directory in IIS called &ldquo;SecurityTest&rdquo;, pointing to an empty folder, called &ldquo;SecurityTest&rdquo;.</p>
 <p>Inside SecurityTest, I created a &ldquo;bin&rdquo; folder, and copied in the DLL file from UrlRewritingNet.</p>
 <p>Next, I created a Web.config file in the &ldquo;SecurityTest&rdquo; folder, and gave it the minimal configuration to get this working:</p>
-<pre class="brush: xml;"><?xml version="1.0"?>
+
+{% highlight xml %}
+<?xml version="1.0"?>
 <configuration>
 
     <configSections>
@@ -43,18 +45,20 @@ tags:
     </urlrewritingnet>
     
 </configuration>
-</pre>
-<p>You can see that there are three sections.&nbsp; Of course, these can be included in a fully featured Web.config easily too.</p>
-<p>Firstly, we declare the section urlrewritingnet by adding a<br>
-<section> element inside <configSections>.</p>
-<p>Next, we add a module inside <system.webServer> so that all requests are routed through the rewriter module, allowing it to do its stuff.</p>
-<p>Finally, we add the urlrewritingnet section itself, and add a rule which maps all http:// requests into https://.&nbsp; This is done by mapping source expressions which match this regular expression:</p>
+{% endhighlight %}
+
+<p>You can see that there are three sections. Of course, these can be included in a fully featured Web.config easily too.</p>
+<p>Firstly, we declare the section urlrewritingnet by adding a &lt;section&gt; element inside &lt;configSections&gt;.</p>
+<p>Next, we add a module inside &lt;system.webServer&gt; so that all requests are routed through the rewriter module, allowing it to do its stuff.</p>
+<p>Finally, we add the urlrewritingnet section itself, and add a rule which maps all http:// requests into https://. This is done by mapping source expressions which match this regular expression:</p>
 <p><code>http\://(.*)</code> </p>
 <p>into this destination:</p>
 <p><code>https://$1</code> </p>
 <p>where $1 means insert the text matched in the first selector (.*) in the source regular expression. We tell the rule to cause a redirect by adding the <code>redirect="Domain"</code>. This is important, otherwise the request would only be rewritten as https on the server side, and still transmitted as http over the network.</p>
 <p>Finally, I created the simplest possible Default.aspx page like this:</p>
-<pre class="brush: xml;"><html>
+
+{% highlight html %}
+<html>
 <head>
 <title>Security Test</title>
 </head>
@@ -63,8 +67,10 @@ tags:
 <p>Attempting to access this page using http should automatically redirect to https.</p>
 </body>
 </html>
-</pre>
-<p>Now, in my browser, I navigated to http://localhost/SecurityTest/Default.aspx.&nbsp; The rewrite rule picked matched the rule, with $1 being set as localhost/SecurityTest/Default.aspx, and the request being redirected to https://localhost/SecurityTest/Default.aspx as expected!</p>
+{% endhighlight %}
+
+<p>Now, in my browser, I navigated to http://localhost/SecurityTest/Default.aspx. The rewrite rule picked matched the rule, with $1 being set as localhost/SecurityTest/Default.aspx, and the request being redirected to https://localhost/SecurityTest/Default.aspx as expected!</p>
+
 <h3>An Expected but Non-Existent Drawback</h3>
 <p>I was expecting that the problem with any approach using HTTP Modules are that it would only work if ASP.NET is going to be responsible for displaying the content, and that .html files would not be handled by the ASP.NET pipeline.&nbsp; I changed the file extension of Default.aspx to .html and browsed to the page.&nbsp; I didn&rsquo;t expect the redirect to work, as I thought that ASP.NET wouldn&rsquo;t be used to serve the file.&nbsp; However, the redirect did work, which puzzled me.</p>
 <p>Perhaps someone could explain how this worked to me?</p>

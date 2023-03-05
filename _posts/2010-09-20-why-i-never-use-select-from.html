@@ -7,7 +7,9 @@ tags:
 <p>I&rsquo;ve heard for many years that using SELECT * FROM <some table> is a bad idea.&nbsp; I&rsquo;ve always agreed with this in principle, but in practice often haven&rsquo;t followed this guideline.&nbsp; That&rsquo;s all about to change, as I was caught out by what (in my opinion) is a bug in Microsoft SQL Server that totally blew my mind.</p>
 <p>I&rsquo;d always thought the only reason why SELECT * FROM was frowned upon was that it returned an unnecessarily large amount of data from the server, and client applications will typically want to consume only a handful of the returned columns.&nbsp; This opinion was changed when I came across the bug I describe in this post.</p>
 <p>Consider the following table and view:</p>
-<pre class="brush: sql;">use tempdb
+
+{% highlight sql %}
+use tempdb
 go
 
 create table [A](
@@ -30,10 +32,14 @@ go
 create view [AView]
 as
     SELECT * FROM [A]
-go</pre>
+go
+{% endhighlight %}
+
 <p>If we were then to run the View, we get results as expected.</p>
 <p>Now, imagine there&rsquo;s a requirement to add a new column to the table [A], somewhere in the middle of the list of columns above.&nbsp; For example, we want a new column called [NewCol] of type int, with default &ndash;1, between [ColB] and [ColC].&nbsp; We can either make this change in SQL Server Management Studio, or else run the below script (which was generated from within SSMS).</p>
-<pre class="brush: sql;">CREATE TABLE [Tmp_A]
+
+{% highlight sql %}
+CREATE TABLE [Tmp_A]
     (
     [ID] int NOT NULL IDENTITY (1, 1),
     [ColA] nvarchar(100) NULL,
@@ -56,7 +62,9 @@ EXECUTE sp_rename N'Tmp_A', N'A', 'OBJECT'
 GO
 ALTER TABLE [A] ADD CONSTRAINT
     [PK_A] PRIMARY KEY CLUSTERED (ID)
-GO</pre>
+GO
+{% endhighlight %}
+
 <p>Now, if were to execute a select on [AView], we get some rather unexpected results:</p>
 <table border="1" cellspacing="0" cellpadding="2" width="400">
 <tbody>
@@ -92,6 +100,7 @@ GO</pre>
 </tr>
 </tbody>
 </table>
+
 <p>What has happened is that the view outputs the heading columns that were in place at the time the view was created, but the data is taken from the first four columns of the underlying table, which now includes the new column [NewCol] instead of [ColC].</p>
 <p>My client application was attempting to read the column [ColC] from the returned dataset and was producing unexpected results, as it was reading data from the underlying column [NewCol].</p>
 <p>My expectation would be that the view would either continue to return the four columns it originally did, or else return all five columns of data.&nbsp; Returning the original column headings but with the new data seems odd at best.</p>

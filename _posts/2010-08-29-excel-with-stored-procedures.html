@@ -8,7 +8,9 @@ tags:
 <h3>Introduction</h3>
 <p>A couple of week ago, I read <a href="http://www.sqlservercentral.com/articles/Stored+Procedures/63537/" target="_blank">this post</a> by David Poole about reading data from SQL Server into Excel, where the data source was a parameterised stored procedure.&nbsp; David concludes that a small amount of (albeit trivial) VBA code is required in order to make this work.&nbsp; However, deep down in my psyche, I knew I&rsquo;d been able to do this without writing any VBA code.&nbsp; So, after a bit of playing around, I&rsquo;ve managed to solve the problem.</p>
 <p>For the purposes of this document, I&rsquo;ve setup a really simple database for us to use, using the following script.</p>
-<pre class="brush: sql;">CREATE DATABASE xlsproc
+
+{% highlight sql %}
+CREATE DATABASE xlsproc
 GO
 USE xlsproc
 GO
@@ -38,7 +40,8 @@ AS
     FROM [TestTable]
     WHERE [Category] = @Category
 GO
-</pre>
+{% endhighlight %}
+
 <p>Our objective is to allow users to enter a value into a cell in Excel, and have this value passed to the GetProductsForCategory stored procedure, and the results returned to Excel.</p>
 <h3>Querying with Excel 2007</h3>
 <p>I&rsquo;m using Excel 2007, and the process has been made significantly easier since Excel 2003.&nbsp; To start, we&rsquo;ll set up a cell on our spreadsheet which will contain our parameter.&nbsp; Something like this should suffice:</p>
