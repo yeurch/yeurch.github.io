@@ -1,0 +1,16 @@
+- selector: pibow_slider
+  captions: false
+  images:
+    - src: /assets/images/20130901_pibow/1.JPG
+    - src: /assets/images/20130901_pibow/2.JPG
+    - src: /assets/images/20130901_pibow/3.JPG
+    - src: /assets/images/20130901_pibow/4.JPG
+    - src: /assets/images/20130901_pibow/5.JPG
+    - src: /assets/images/20130901_pibow/6.JPG
+    - src: /assets/images/20130901_pibow/7.JPG
+    - src: /assets/images/20130901_pibow/8.JPG
+    - src: /assets/images/20130901_pibow/9.JPG
+    - src: /assets/images/20130901_pibow/10.JPG
+  settings:
+    height: "650"
+    effect: "'fade'"
