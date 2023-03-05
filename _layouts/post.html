@@ -1,0 +1,10 @@
+---
+layout: base
+---
+
+{%- assign date_format = site.date_format | default: "%-d %B %Y" -%}
+{{ page.date | date: date_format }}<br/>
+
+<div class="heading">{{page.title}}</div><hr/>
+
+{{content}}

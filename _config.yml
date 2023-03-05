@@ -18,7 +18,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Richard Fawcett
+title: Richard Fawcett's website
 email: richard@richardfawcett.net
 description: >- # this means to ignore newlines until "baseurl:"
   Personal website of Richard Fawcett.
@@ -32,7 +32,7 @@ permalink: /:year/:month/:day/:title
 host: 0.0.0.0
 
 # Build settings
-theme: minima
+# theme: minima
 plugins:
   - jekyll-feed
 
