@@ -45,7 +45,7 @@ tags:
 </configuration>
 </pre>
 <p>You can see that there are three sections.&nbsp; Of course, these can be included in a fully featured Web.config easily too.</p>
-<p>Firstly, we declare the section urlrewritingnet by adding a<br />
+<p>Firstly, we declare the section urlrewritingnet by adding a<br>
 <section> element inside <configSections>.</p>
 <p>Next, we add a module inside <system.webServer> so that all requests are routed through the rewriter module, allowing it to do its stuff.</p>
 <p>Finally, we add the urlrewritingnet section itself, and add a rule which maps all http:// requests into https://.&nbsp; This is done by mapping source expressions which match this regular expression:</p>

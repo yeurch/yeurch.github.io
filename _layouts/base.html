@@ -1,12 +1,20 @@
-<html>
+<!DOCTYPE html>
+<html lang="en-GB">
 <head>
-    <link rel="alternate" type="application/rss+xml"  title="RSS Feed for fabiensanglard.net" href="/rss.xml" />
-    <style type="text/css">
+    <link rel="alternate" type="application/rss+xml"  title="RSS Feed for {{ site.sitename }}" href="/feed.xml">
+    <style>
 
     @font-face {
-        font-family: 'yeurchfont';
-/*      font-display: optional;*/
-        src: url('/assets/fonts/DejaVuSansMono.woff2');
+      font-family: 'yeurchfont';
+      src: url('/assets/fonts/DejaVuSansMono.woff2');
+      font-display: block;
+    }
+
+    @font-face {
+      font-family: 'yeurchfont';
+      src: url('/assets/fonts/DejaVuSansMono-Bold.woff2');
+      font-weight: bold;
+      font-display: block;
     }
 
     * {
@@ -43,7 +51,7 @@
     }   
 
     pre {
-        font-family: yeurchfont;
+        font-family: yeurchfont, monospace;
         background-color: white; 
         border: 1px solid Black; 
         padding-left: 2%;
@@ -71,6 +79,10 @@
     }   
     .title {
         text-decoration: none;
+    }
+
+    p.contactlinks {
+        text-decoration: none;;
     }
 
     img.pixel, canvas.pixel {
@@ -110,18 +122,35 @@
     padding-right: 0.3ch;
     }
 
+    header {
+        text-align: center;
+    }
+
+    footer {
+        text-align: center;
+    }
+
     </style>
+    {% if page.custom_css %}
+      {% for stylesheet in page.custom_css %}
+      <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/{{ stylesheet }}.css">
+      {% endfor %}
+    {% endif %}
     <title>{{ page.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=12.0, minimum-scale=1.0, user-scalable=yes">
 </head>  
-    <body><br><center>
+    <body>
+        <header>
+        <br>
     <div style="display: inline-block; vertical-align:middle;">
 <a href="/" class="title"><b>{{ site.title | upcase }}</b><br>
-</a><hr/><div style="text-align: justify;display: inline-block; width: 100%;">
+</a><hr><div style="text-align: justify;display: inline-block; width: 100%;">
 <a class="title" href="/about">ABOUT</a> &nbsp;&nbsp;&nbsp;&nbsp;<a class="title" href="/contact">CONTACT</a> &nbsp;&nbsp;&nbsp;&nbsp;<a class="title" href="/feed.xml">RSS</a></div></div>
-</center><br><br>
+</header><br><br>
 
 {{content}}
 
-<hr/>
-<center>*</center>
+<footer>
+    <hr>
+    *
+</footer>

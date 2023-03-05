@@ -24,8 +24,7 @@ description: >- # this means to ignore newlines until "baseurl:"
   Personal website of Richard Fawcett.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://www.richardfawcett.net" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: yeurch
-github_username:  yeurch
+sitename: richardfawcett.net
 permalink: /:year/:month/:day/:title
 
 # Hosting settings

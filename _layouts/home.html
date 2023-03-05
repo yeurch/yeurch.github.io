@@ -19,7 +19,7 @@ layout: base
       <p style="text-align: left;margin-bottom: 1ch;"></p>
       {%- assign date_format = site.date_format | default: "%d-%b-%Y" -%}
       {%- for post in posts -%}
-        {{ post.date | date: date_format }}: <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a><br/>
+        {{ post.date | date: date_format }}: <a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a><br>
       {%- endfor -%}
   
       {% if site.paginate %}
