@@ -32,4 +32,4 @@ Things I’m keen to learn in the next 12 – 24 months:
 
 The majority of blogging content will be technical in nature, but be warned… there will be topics of a non-technical nature thrown in from time to time too.
 
-I’m also using Mastodon for short updates. My Mastodon handle is [@yeurch@hachyderm.io](https://hachyderm.io/@yeurch).  And on Sunday nights (20:00 UK time) I sometimes stream video games on Twitch, at https://twitch.tv/yeurch.  Come say hi!
+I’m also using Mastodon for short updates. My Mastodon handle is [@yeurch@hachyderm.io](https://hachyderm.io/@yeurch).  And on Sunday nights (20:00 UK time) I sometimes stream video games on Twitch, at [https://twitch.tv/yeurch](https://twitch.tv/yeurch).  Come say hi!
