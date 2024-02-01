@@ -9,13 +9,15 @@ It's a fair bet that you've heard of the [Monty Hall problem](https://en.wikiped
 
 In short, if you don't switch your choice, your chances of winning are 1/3, whereas perhaps a little counter-intuitively, if you _do_ switch, your chances increase to 2/3. This isn't a post about why that's the case ... please do go ahead and do your own thought experiment, or read about it some more in the Wikipedia article linked above.
 
-No, what this post is about is programming. My 15-year-old daughter is doing an GCSE in Computing, and learning Python.  The Monty Hall problem came up in conversation a few days ago so I suggested to her that we programmed a simulation of the problem in Python.  We spend maybe a half-hour writing some Python that played the game 10,000 times switching, and 10,000 times not switching.  It was really satisfying for my daughter to see the numbers come out pretty close to what was expected ... around 3,300 wins if the program doesn't switch boxes, and around 6,700 wins if it switches.  Who am I even kidding, it was satisfying for me too.
+No, what this post is about is programming. My 15-year-old daughter is doing an GCSE in Computing, and learning Python.  The Monty Hall problem came up in conversation a few days ago so I suggested to her that we programmed a simulation of the problem in Python.  We spent maybe a half-hour writing some Python that played the game 10,000 times switching, and 10,000 times not switching.  It was really satisfying for my daughter to see the numbers come out pretty close to what was expected ... around 3,300 wins if the program doesn't switch boxes, and around 6,700 wins if it switches.  Who am I even kidding, it was satisfying for me too.
 
 Now, I've been playing around in my free time with the generative AI [ChatGPT](https://chat.openai.com) for the last week or so.  I don't have a subscription, so I'm limited to the older "inferior" ChatGPT 3.5 on my free account.  I've heard it can generate source code in various languages, but until tonight, I'd never put it to the test.  This seemed like a great opportunity to give it a try.  Here's what I asked ChatGPT:
 
 > Write a Python program to calculate the probability of winning the Monty Hall box problem if you swap boxes, and also if you don't swap.
 
 Quick as a flash, the AI responded with a brief outline of the problem, and a Python program to simulate it.  What took my daughter and me half an hour would have likely taken me five to ten minutes on my own.  ChatGPT gave a correct answer almost instantaneously; I ran the program it generated and it gave the expected statistics immediately.  I'll leave you now with the wise words of ChatGPT:
+
+Here's a link to the transcript of our conversation: https://chat.openai.com/share/b19cce6f-11e6-4889-9d01-f40ccf83af61.
 
 ## ChatGPT Response
 
