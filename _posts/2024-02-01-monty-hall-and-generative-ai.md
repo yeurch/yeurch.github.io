@@ -17,7 +17,7 @@ Now, I've been playing around in my free time with the generative AI [ChatGPT](h
 
 Quick as a flash, the AI responded with a brief outline of the problem, and a Python program to simulate it.  What took my daughter and me half an hour would have likely taken me five to ten minutes on my own.  ChatGPT gave a correct answer almost instantaneously; I ran the program it generated and it gave the expected statistics immediately.  I'll leave you now with the wise words of ChatGPT:
 
-Here's a link to the transcript of our conversation: https://chat.openai.com/share/b19cce6f-11e6-4889-9d01-f40ccf83af61.
+Here's a link to the transcript of our conversation: [https://chat.openai.com/share/b19cce6f-11e6-4889-9d01-f40ccf83af61](https://chat.openai.com/share/b19cce6f-11e6-4889-9d01-f40ccf83af61).
 
 ## ChatGPT Response
 
