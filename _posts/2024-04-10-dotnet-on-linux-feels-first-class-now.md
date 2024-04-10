@@ -43,3 +43,4 @@ dotnet run -c Release -f net8.0
 And that was it ... Garnet was up and running, with identical build and execution steps as on
 Windows (save for the forward slash vs backslash when changing directory).
 
+![Garnet running on Fedora 39](/assets/images/20240410_dotnet/garnet.png)
