@@ -2,8 +2,6 @@
 layout: post
 title:  "Static Site Generation in 2025 - Hugo"
 ---
-# Static Site Generation in 2025
-
 As I'm writing, this site is hosted on GitHub Pages, using Jekyll, which is supported out of the box.  I had a chat with my good friend ChatGPT, who suggests that Jekyll is not the only game in town.  It threw up Hugo and Gatsby as decent alternatives, with the following bulleted notes.
 
 ### Hugo
@@ -70,7 +68,9 @@ Next up is the choice of Sass transpiler.  Extended is needed to transpile Sass 
 
 Hmm. So I can install the extended edition to get deprecated Sass support out of the box.  Weird.  I installed Dart Sass on my system just to make sure I wasn't going to be using anything deprecated (although I later found that the quick start doesn't seem to require Sass, so this wasn't a real issue).
 
-> brew install sass/sass/sass
+```bash
+brew install sass/sass/sass
+```
 
 At this point, I was pretty down on Hugo, I'll be honest.  Things changed.  Once I got to `hugo new site quickstart` and beyond, things were great!
 
