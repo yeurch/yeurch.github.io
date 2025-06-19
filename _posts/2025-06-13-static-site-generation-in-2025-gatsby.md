@@ -121,6 +121,10 @@ jobs:
 
 Now, the Gatsby documentation doesn't seem to mention any hosting providers other than using Netlify, but as I say, you can host it anywhere you want.  Since Netlify's acquisition of Gatsby in 2023, they seem to be strongly pushing Netlify as _the place_ to host your Gatsby sites.
 
+### A Note On Disk Space
+
+Sometimes, the node ecosystem can lead to bloated disk space usage due to the number of packages downloaded to `node_modules`. Unfortunately, Gatsby is no exception to this, with my hello world example site weighing in at 629 MB, of which 567 MB is contained in the `node_modules` directory. Compare this with my hello world Hugo site from the previous post, which totals just 12 MB. For some with relatively modest storage capacity, this could be a real consideration when deciding which static site generator to use.
+
 ### Summary
 
 Gatsby feels super powerful, but users without a decent grounding in React might find the learning curve to be pretty steep.  In terms of its use for hosting a simple blog, it's likely overkill, particularly for the kind of thing I'd want to do.
